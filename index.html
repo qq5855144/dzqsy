@@ -101,22 +101,23 @@
             border: 1px solid #ffb61e;
             color: transparent;
         }
-        .grid-container {
+     .grid-container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
-            padding: 10px;
+            gap: 12px; /* 根据需要调整间隔 */
+            padding: 10px; 
             position: fixed;
             top: 50px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
             max-width: 600px;
-            max-height: 225px;
+            max-height: 225px; /* 设置快捷访问显示区域最大高度 */
             overflow-y: auto; 
             background-color: transparent;
             z-index: 500;
         }
+
         .grid-item {
             display: flex;
             flex-direction: column;
@@ -124,8 +125,9 @@
             justify-content: center;
             background-color: transparent;
             cursor: pointer;
-            width: calc((100% / 5) - 10px); 
-            margin: 5px 0;
+            width: calc((100% / 5) - 10px);
+            margin: 0px 0;
+            position: relative; 
         }
         .grid-item img {
             width: 50px;
@@ -143,12 +145,13 @@
             width: 50px; 
         }
         .delete-icon {
-            width: 15px; 
-            height: 15px; 
+            width: 10px; 
+            height: 10px;
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 0; 
+            right: 0; 
             cursor: pointer;
+            display: none; 
         }
         .dialog {
             display: none;
@@ -429,7 +432,7 @@
             newItem.innerHTML = `
                 <img src="${image}" alt="${title}">
                 <span>${title}</span>
-                ${deleteMode ? '<img src="img/x.png" class="delete-icon" onclick="removeShortcut(event)" />' : ''}
+                <img src="img/x.png" class="delete-icon" onclick="removeShortcut(event)" style="display: ${deleteMode ? 'block' : 'none'};" />
             `;
             shortcutContainer.appendChild(newItem);
         }
@@ -583,17 +586,16 @@
 
         function toggleDeleteMode() {
             deleteMode = !deleteMode;
-            loadShortcuts();
+            loadShortcuts(); 
         }
 
         function removeShortcut(event) {
-            event.stopPropagation();
+            event.stopPropagation(); // 防止事件冒泡
             const title = event.target.parentElement.querySelector('span').innerText;
             let shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
-            shortcuts = shortcuts.filter(item => item.title !== title);
+            shortcuts = shortcuts.filter(item => item.title !== title); 
             localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
             loadShortcuts();
-            toggleDeleteMode();
         }
 
         window.onclick = function(event) {
