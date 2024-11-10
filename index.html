@@ -101,10 +101,10 @@
             border: 1px solid #ffb61e;
             color: transparent;
         }
-     .grid-container {
+        .grid-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px; /* 根据需要调整间隔 */
+            gap: 12px;
             padding: 10px; 
             position: fixed;
             top: 50px;
@@ -112,12 +112,11 @@
             transform: translateX(-50%);
             width: 90%;
             max-width: 600px;
-            max-height: 225px; /* 设置快捷访问显示区域最大高度 */
+            max-height: 225px; 
             overflow-y: auto; 
             background-color: transparent;
             z-index: 500;
         }
-
         .grid-item {
             display: flex;
             flex-direction: column;
@@ -145,13 +144,20 @@
             width: 50px; 
         }
         .delete-icon {
-            width: 10px; 
-            height: 10px;
+            width: 15px; 
+            height: 15px;
             position: absolute;
-            top: 0; 
-            right: 0; 
+            top: -5px; 
+            right: -5px; 
             cursor: pointer;
             display: none; 
+            background-color: rgba(255, 0, 0, 0.7); 
+            border-radius: 50%; 
+            color: white; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px; 
         }
         .dialog {
             display: none;
@@ -295,7 +301,7 @@
         </div>
     </div>
     <img src="img/cd.png" alt="切换侧边栏" class="toggle-button" onclick="toggleSidebar()">
-    
+
     <script>
         let searchEngine = 'bing';
         let deleteMode = false;
@@ -432,7 +438,7 @@
             newItem.innerHTML = `
                 <img src="${image}" alt="${title}">
                 <span>${title}</span>
-                <img src="img/x.png" class="delete-icon" onclick="removeShortcut(event)" style="display: ${deleteMode ? 'block' : 'none'};" />
+                <div class="delete-icon" onclick="removeShortcut(event)" style="display: ${deleteMode ? 'flex' : 'none'};">&times;</div>
             `;
             shortcutContainer.appendChild(newItem);
         }
