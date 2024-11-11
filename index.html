@@ -23,7 +23,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            filter: blur(0px);
+            filter: blur(0px); 
             z-index: 1;
         }
         .mask {
@@ -730,22 +730,24 @@
         }
 
         function updateBlurValue(value) {
-            backgroundContainer.style.filter = `blur(${value}px)`;
+            backgroundContainer.style.filter = `blur(${value}px)`; 
         }
 
         function updateMaskValue(value) {
             const mask = document.getElementById('mask');
             mask.style.backgroundColor = `rgba(0, 0, 0, ${value / 100})`; 
         }
+
         function setBlur() {
             const blurValue = document.getElementById('blur-range').value;
             const maskValue = document.getElementById('mask-range').value;            
-            backgroundContainer.style.filter = `blur(${blurValue}px)`;
+            backgroundContainer.style.filter = `blur(${blurValue}px)`; 
             updateMaskValue(maskValue); 
             localStorage.setItem('backgroundBlur', blurValue);
             localStorage.setItem('backgroundMask', maskValue);
             closeBlurDialog();
         }
+        
         window.onclick = function(event) {
             const sidebar = document.getElementById('sidebar');
             const toggleButton = document.querySelector('.toggle-button');
