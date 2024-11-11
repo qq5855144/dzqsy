@@ -128,7 +128,7 @@
             justify-content: center;
             background-color: transparent;
             cursor: pointer;
-            width: calc((100% / 6) - 10px);
+            width: calc((100% / 5) - 10px);
             margin: 0px 0;
             position: relative; 
         }
@@ -302,6 +302,7 @@
             <img src="img/sc.png" alt="删除快捷方式" onclick="toggleDeleteMode()" style="cursor:pointer;width:20px;height:20px;">
             <img src="img/bj.png" alt="设置背景" onclick="openBackgroundDialog()" style="cursor:pointer;width:20px;height:20px;">
             <img src="img/dc.png" alt="导入导出" onclick="openExportImportDialog()" style="cursor:pointer;width:20px;height:20px;">
+            <img src="img/text.png" alt="隐藏名称" onclick="toggleShortcutNames()" style="cursor:pointer;width:20px;height:20px;">
         </div>
     </div>
     <img src="img/cd.png" alt="切换侧边栏" class="toggle-button" onclick="toggleSidebar()">
@@ -309,6 +310,7 @@
     <script>
         let searchEngine = 'bing';
         let deleteMode = false;
+        let showShortcutNames = localStorage.getItem('showShortcutNames') === 'false' ? false : true; 
         const storedBackground = localStorage.getItem('userBackground');
         if (storedBackground) {
             document.body.style.backgroundImage = `url('${storedBackground}')`;
@@ -406,6 +408,10 @@
         window.onload = function() {
             loadShortcuts();
             setTextColorBasedOnBackground();
+            const shortcutItems = document.querySelectorAll('.grid-item span');
+            shortcutItems.forEach(item => {
+                item.style.display = showShortcutNames ? 'block' : 'none'; 
+            });
         };
 
         function loadShortcuts() {
@@ -442,7 +448,7 @@
             };
             newItem.innerHTML = `
                 <img src="${image}" alt="${title}">
-                <span>${title}</span>
+                <span style="display: ${showShortcutNames ? 'block' : 'none'};">${title}</span>
                 <div class="delete-icon" onclick="removeShortcut(event)" style="display: ${deleteMode ? 'flex' : 'none'};">&times;</div>
             `;
             shortcutContainer.appendChild(newItem);
@@ -611,6 +617,15 @@
             localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
             loadShortcuts();
             setTextColorBasedOnBackground(); 
+        }
+
+        function toggleShortcutNames() {
+            showShortcutNames = !showShortcutNames; 
+            localStorage.setItem('showShortcutNames', showShortcutNames);
+            const shortcutItems = document.querySelectorAll('.grid-item span');
+            shortcutItems.forEach(item => {
+                item.style.display = showShortcutNames ? 'block' : 'none'; 
+            });
         }
 
         function setTextColorBasedOnBackground() {
