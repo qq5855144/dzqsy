@@ -275,7 +275,11 @@
         </div>
         <div class="suggestions" id="suggestions-box"></div>
         <div class="search-input-wrapper">
-            <input type="text" class="search-input-style" id="search-input" placeholder="搜索..." onkeypress="if(event.key==='Enter') performSearch()" oninput="showSuggestions()">
+            <input type="text" class="search-input-style" id="search-input" placeholder="搜索..." 
+       onfocus="document.getElementById('copyright').style.display='none';" 
+       onblur="document.getElementById('copyright').style.display='block'; if(this.value === '') this.placeholder='搜索...';" 
+       onkeypress="if(event.key==='Enter') performSearch()" 
+       oninput="showSuggestions()">
             <img src="img/sc.png" alt="清除" onclick="clearSearchInput()" class="clear-button">
         </div>
     </div>
@@ -682,4 +686,7 @@
         }
     </script>
 </body>
+<div id="copyright" style="position: fixed; bottom: 1px; left: 50%; transform: translateX(-50%); font-size: 3px; color: rgba(255, 255, 255, 0.7); white-space: nowrap;">
+    版权归属：MT论坛@练习时长两年半的水怪
+</div>
 </html>
