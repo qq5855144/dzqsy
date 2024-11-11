@@ -37,12 +37,12 @@
             width: 100%;
             height: 40px;
             padding: 10px;
-            border: none;
+            border: 1px solid #ccc;
             border-radius: 15px;
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.2);
             outline: none;
             box-sizing: border-box;
-            background-color: rgba(240, 240, 244, 0.9);
+            background-color: rgba(240, 240, 244, 0.8);
             color: #2c2c2c;
             backdrop-filter: blur(5px);
         }
@@ -75,7 +75,7 @@
             transition: background-color 0.3s;
         }
         .suggestion-item:hover {
-            background-color: rgba(241,241,241,0.8);
+            background-color: rgba(241, 241, 241, 0.8);
         }
         .engine-selector {
             display: flex;
@@ -88,9 +88,9 @@
             width: 54px;
             height: 30px;
             padding: 0;
-            border: none;
+            border: 1px solid #ccc;
             border-radius: 7px;
-            background-color: rgba(240, 240, 244, 0.9);
+            background-color: rgba(240, 240, 244, 0.8);
             color: transparent;
             font-size: 14px;
             cursor: pointer;
@@ -99,7 +99,12 @@
             background-repeat: no-repeat;
             background-position: center;
             backdrop-filter: blur(5px);
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .engine-button:focus {
+            outline: none;
+            border-color: #ffb61e;
         }
         .engine-button.selected {
             border: 1px solid #ffb61e;
@@ -129,7 +134,7 @@
             background-color: transparent;
             cursor: pointer;
             width: calc((100% / 5) - 10px);
-            margin: 0px 0;
+            margin: 0;
             position: relative; 
         }
         .grid-item img {
@@ -169,13 +174,16 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #ffffff;
+            background: rgba(240, 240, 244, 0.8);
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             padding: 20px;
             z-index: 2000;
             width: 300px; 
+            border: 1px solid #ccc;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.2);
             box-sizing: border-box;
+            backdrop-filter: blur(5px);
         }
         .dialog h3 {
             margin: 0 0 15px;
@@ -183,34 +191,39 @@
             color: #2c2c2c; 
         }
         .dialog input {
-            width: calc(100% - 4px);
-            height: 40px;
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 12px; 
-            box-sizing: border-box;
-            font-size: 14px;
-            transition: border-color 0.3s;
+            flex: 1; 
+            margin: 0; 
+            padding: 10px 15px; 
+            border: 1px solid #ccc; 
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px; 
+            background-color: rgba(240, 240, 244, 0.5); 
+            color: #2c2c2c; 
+            font-size: 14px; 
+            box-sizing: border-box; 
+            transition: background-color 0.3s, transform 0.2s; 
+            backdrop-filter: blur(5px);
         }
         .dialog input:focus {
             border-color: #ffb61e; 
             outline: none; 
+            transform: translateY(-1px); 
         }
         .dialog button {
             flex: 1;
             margin: 0 5px; 
             padding: 10px 15px;
-            border: none;
-            border-radius: 12px;
-            background-color: #2ca9e1;
-            color: white;
+            border: 1px solid #ccc; 
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            background-color: rgba(240, 240, 244, 0.5); 
+            color: #2c2c2c; 
             font-size: 14px; 
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;   
         }
         .dialog button:hover {
-            background-color: #e0a71e; 
+            background-color: rgba(240, 240, 244, 0.5); 
             transform: translateY(-1px); 
         }
         .dialog button:active {
@@ -222,9 +235,9 @@
             right: -50px;
             width: 50px;
             height: 100vh;
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(50px);
-            box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
             transition: right 0.3s;
             z-index: 2000;
         }
@@ -262,7 +275,7 @@
         </div>
         <div class="suggestions" id="suggestions-box"></div>
         <div class="search-input-wrapper">
-            <input type="text" class="search-input-style" id="search-input" placeholder="搜索..." onkeypress="if(event.key==='Enter') search()" oninput="showSuggestions()">
+            <input type="text" class="search-input-style" id="search-input" placeholder="搜索..." onkeypress="if(event.key==='Enter') performSearch()" oninput="showSuggestions()">
             <img src="img/sc.png" alt="清除" onclick="clearSearchInput()" class="clear-button">
         </div>
     </div>
@@ -270,9 +283,9 @@
     
     <div class="dialog" id="add-dialog">
         <h3 style="margin: 0 0 10px;">添加快捷方式</h3>
-        <input type="text" id="icon-title" placeholder="请输入标题" style="margin-bottom: 10px;">
-        <input type="text" id="icon-url" placeholder="请输入网页链接" style="margin-bottom: 10px;">
-        <input type="text" id="icon-image" placeholder="请输入图标链接" style="margin-bottom: 10px;">
+        <input type="text" class="search-input-style" id="icon-title" placeholder="请输入标题" style="margin-bottom: 10px;">
+        <input type="text" class="search-input-style" id="icon-url" placeholder="请输入网页链接" style="margin-bottom: 10px;">
+        <input type="text" class="search-input-style" id="icon-image" placeholder="请输入图标链接" style="margin-bottom: 10px;">
         <div style="display: flex; justify-content: space-between;">
             <button onclick="chooseImage()">相册</button>
             <button onclick="addShortcut()">确定</button>
@@ -281,7 +294,7 @@
     </div>
     <div class="dialog" id="background-dialog" style="display: none;">
         <h3 style="margin: 0 0 10px;">设置背景图片</h3>
-        <input type="text" id="background-url" placeholder="请输入背景图片链接" style="margin-bottom: 10px;">
+        <input type="text" class="search-input-style" id="background-url" placeholder="请输入背景图片链接" style="margin-bottom: 10px;">
         <div style="display: flex; justify-content: space-between;">
             <button onclick="chooseBackgroundImage()">相册</button>
             <button onclick="setBackground()">确定</button>
@@ -310,7 +323,7 @@
     <script>
         let searchEngine = 'bing';
         let deleteMode = false;
-        let showShortcutNames = localStorage.getItem('showShortcutNames') === 'false' ? false : true; 
+        let showShortcutNames = localStorage.getItem('showShortcutNames') !== 'false'; 
         const storedBackground = localStorage.getItem('userBackground');
         if (storedBackground) {
             document.body.style.backgroundImage = `url('${storedBackground}')`;
@@ -332,15 +345,11 @@
             }
             watchInput() {
                 this.searchInput.onkeyup = () => {
-                    if (this.searchInput.value.length == 0) {
-                        this.suggestionsBox.innerHTML = '';
-                        this.suggestionsBox.style.display = 'none';
+                    if (this.searchInput.value.length === 0) {
+                        this.clearSuggestions();
                         return;
                     }
-                    const script = document.createElement('script');
-                    script.src = `https://www.baidu.com/su?wd=${encodeURIComponent(this.searchInput.value)}&cb=showSuggestions`;
-                    document.body.appendChild(script);
-                    document.body.removeChild(script);
+                    this.fetchSuggestions();
                 };
                 this.searchInput.onfocus = () => {
                     if (this.searchInput.value.length > 0) {
@@ -348,19 +357,27 @@
                     }
                 };
             }
+            fetchSuggestions() {
+                const script = document.createElement('script');
+                script.src = `https://www.baidu.com/su?wd=${encodeURIComponent(this.searchInput.value)}&cb=showSuggestions`;
+                document.body.appendChild(script);
+                document.body.removeChild(script);
+            }
+            clearSuggestions() {
+                this.suggestionsBox.innerHTML = '';
+                this.suggestionsBox.style.display = 'none';
+            }
             showMsg(msg) {
-                let str = '';
-                for (let suggestion of msg.s) {
-                    str += `<div class="suggestion-item" onclick="selectSuggestion('${suggestion}')">${suggestion}</div>`;
-                }
+                let str = msg.s.map(suggestion => 
+                    `<div class="suggestion-item" onclick="selectSuggestion('${suggestion}')">${suggestion}</div>`
+                ).join('');
                 this.suggestionsBox.innerHTML = str;
                 this.suggestionsBox.style.display = str ? 'block' : 'none';
             }
         }
 
         function showSuggestions(msg) {
-            const searchHint = new SearchHint();
-            searchHint.showMsg(msg);
+            new SearchHint().showMsg(msg);
         }
 
         function selectSuggestion(suggestion) {
@@ -369,10 +386,10 @@
             performSearch();
         }
 
-        function setSearchEngine(engine, buttonElement) {
+        function setSearchEngine(engine, button) {
             searchEngine = engine;
             document.querySelectorAll('.engine-button').forEach(btn => btn.classList.remove('selected'));
-            buttonElement.classList.add('selected');
+            button.classList.add('selected');
             performSearch();
         }
 
@@ -384,7 +401,7 @@
                 window.open(query.startsWith('http') ? query : 'http://' + query, '_self');
                 return;
             }
-            const urls = {
+            const searchUrls = {
                 bing: `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
                 baidu: `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`,
                 google: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
@@ -393,11 +410,7 @@
                 imageSearch: `https://vt.quark.cn/blm/search-pic-list-203/index?type=pic&source=sc&scname=life_show_general_image&hid=3a4f9367b6e04330a921841a61079a36&uid=2ac24681ee9b49d7a5beaaf6cd653c32|||1730046378&uc_param_str=dnntnwvepffrgibijbprsvdsdicheiniut&from=&databucket=new2&fromdetail=3#/` + encodeURIComponent(query),
                 apkpure: `https://apkpure.com/search?q=${encodeURIComponent(query)}`
             };
-            window.open(urls[searchEngine], '_self');
-        }
-
-        function search() {
-            performSearch();
+            window.open(searchUrls[searchEngine], '_self');
         }
 
         function clearSearchInput() {
@@ -407,7 +420,7 @@
 
         window.onload = function() {
             loadShortcuts();
-            setTextColorBasedOnBackground();
+            updateTextColorBasedOnBackground();
             const shortcutItems = document.querySelectorAll('.grid-item span');
             shortcutItems.forEach(item => {
                 item.style.display = showShortcutNames ? 'block' : 'none'; 
@@ -427,17 +440,13 @@
                     { title: '脚本合集', url: 'https://gitlink.org.cn/damengzhu/XBrowser-User-Scripts/tree/master/X浏览器脚本整理.md', image: 'img/js.png' }
                 ];
                 localStorage.setItem('shortcuts', JSON.stringify(defaultShortcuts));
-                defaultShortcuts.forEach(shortcut => {
-                    createShortcutElement(shortcut.title, shortcut.url, shortcut.image);
-                });
+                defaultShortcuts.forEach(shortcut => createShortcutElement(shortcut));
             } else {
-                shortcuts.forEach(shortcut => {
-                    createShortcutElement(shortcut.title, shortcut.url, shortcut.image);
-                });
+                shortcuts.forEach(createShortcutElement);
             }
         }
 
-        function createShortcutElement(title, url, image) {
+        function createShortcutElement({ title, url, image }) {
             const shortcutContainer = document.getElementById('shortcut-container');
             const newItem = document.createElement('div');
             newItem.className = 'grid-item';
@@ -479,24 +488,21 @@
                     .then(res => res.blob())
                     .then(blob => {
                         const reader = new FileReader();
-                        reader.onloadend = function() {
-                            const base64data = reader.result;
-                            saveShortcut(title, url, base64data);
-                        }
+                        reader.onloadend = () => saveShortcut(title, url, reader.result);
                         reader.readAsDataURL(blob);
                     })
-                    .catch(err => alert('图标链接无效，请确保链接正确！'));
+                    .catch(() => alert('图标链接无效，请确保链接正确！'));
             }
         }
 
         function saveShortcut(title, url, image) {
-            let shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
+            const shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
             shortcuts.push({ title, url, image });
             localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
-            createShortcutElement(title, url, image);
+            createShortcutElement({ title, url, image });
             closeAddDialog();
             clearInputFields();
-            setTextColorBasedOnBackground(); 
+            updateTextColorBasedOnBackground(); 
         }
 
         function clearInputFields() {
@@ -512,7 +518,7 @@
             input.onchange = event => {
                 const file = event.target.files[0];
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = e => {
                     document.getElementById('icon-image').value = e.target.result;
                 };
                 reader.readAsDataURL(file);
@@ -534,7 +540,7 @@
                 document.body.style.backgroundImage = `url('${url}')`;
                 localStorage.setItem('userBackground', url);
                 closeBackgroundDialog();
-                setTextColorBasedOnBackground(); 
+                updateTextColorBasedOnBackground(); 
             } else {
                 alert('请填写背景图片链接！');
             }
@@ -547,7 +553,7 @@
             input.onchange = event => {
                 const file = event.target.files[0];
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = e => {
                     document.getElementById('background-url').value = e.target.result;
                 };
                 reader.readAsDataURL(file);
@@ -586,7 +592,7 @@
                     if (data.userBackground) {
                         localStorage.setItem('userBackground', data.userBackground);
                         document.body.style.backgroundImage = `url('${data.userBackground}')`;
-                        setTextColorBasedOnBackground(); 
+                        updateTextColorBasedOnBackground(); 
                     }
                     closeExportImportDialog();
                 };
@@ -600,8 +606,7 @@
         }
 
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('open');
+            document.getElementById('sidebar').classList.toggle('open');
         }
 
         function toggleDeleteMode() {
@@ -616,7 +621,7 @@
             shortcuts = shortcuts.filter(item => item.title !== title); 
             localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
             loadShortcuts();
-            setTextColorBasedOnBackground(); 
+            updateTextColorBasedOnBackground(); 
         }
 
         function toggleShortcutNames() {
@@ -628,7 +633,7 @@
             });
         }
 
-        function setTextColorBasedOnBackground() {
+        function updateTextColorBasedOnBackground() {
             const backgroundImageUrl = localStorage.getItem('userBackground');
             if (backgroundImageUrl) {
                 const img = new Image();
@@ -658,8 +663,7 @@
                     b = Math.floor(b / pixelCount);                    
                     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
                     const textColor = brightness > 125 ? '#000' : '#FFF'; 
-                    const shortcutItems = document.querySelectorAll('.grid-item span');
-                    shortcutItems.forEach(item => {
+                    document.querySelectorAll('.grid-item span').forEach(item => {
                         item.style.color = textColor;
                     });
                 };
