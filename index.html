@@ -26,6 +26,15 @@
             filter: blur(0px);
             z-index: 1;
         }
+        .mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0); /* initial mask color */
+            z-index: 2; /* ensure it is above the background */
+        }
         .search-container {
             position: fixed;
             bottom: 20px;
@@ -215,7 +224,7 @@
         }
         .dialog input[type="range"] {
             width: 100%;
-            margin-bottom: 20px; /* 增加控制条与按钮之间的间距 */
+            margin-bottom: 20px; 
         }
         .dialog button {
             flex: 1;
@@ -272,6 +281,8 @@
 </head>
 <body>
     <div class="background-container" id="background-container"></div>
+    <div class="mask" id="mask"></div> <!-- 添加遮罩层 -->
+    
     <div class="search-container">
         <div class="engine-selector">
             <button class="engine-button" onclick="setSearchEngine('bing', this)" style="background-image: url('img/bing.png');"></button>
@@ -323,8 +334,13 @@
         </div>
     </div>
     <div class="dialog" id="blur-dialog" style="display: none;">
-        <h3 style="margin: 0 0 10px;">设置背景模糊</h3>
+        <h3 style="margin: 0 0 10px;">模糊度</h3>
         <input type="range" id="blur-range" min="0" max="20" value="0" style="width: 100%;" oninput="updateBlurValue(this.value)">
+        
+        <!-- 新增遮罩控制条 -->
+        <h3 style="margin: 10px 0; text-align: center; font-size: 1.2em;">遮罩度</h3>
+        <input type="range" id="mask-range" min="0" max="100" value="0" style="width: 100%;" oninput="updateMaskValue(this.value)">
+        
         <div style="display: flex; justify-content: space-between;">
             <button onclick="setBlur()">确定</button>
             <button onclick="closeBlurDialog()">关闭</button>
@@ -348,6 +364,8 @@
         let showShortcutNames = localStorage.getItem('showShortcutNames') !== 'false'; 
         const storedBackground = localStorage.getItem('userBackground');
         const backgroundContainer = document.getElementById('background-container');
+        const mask = document.getElementById('mask');
+
         if (storedBackground) {
             backgroundContainer.style.backgroundImage = `url('${storedBackground}')`;
         }
@@ -356,9 +374,14 @@
             loadShortcuts();
             updateTextColorBasedOnBackground();
             const savedBlur = localStorage.getItem('backgroundBlur');
+            const savedMask = localStorage.getItem('backgroundMask'); 
             if (savedBlur) {
                 document.getElementById('blur-range').value = savedBlur;
                 backgroundContainer.style.filter = `blur(${savedBlur}px)`;
+            }
+            if (savedMask) {
+                document.getElementById('mask-range').value = savedMask;
+                mask.style.backgroundColor = `rgba(0, 0, 0, ${savedMask / 100})`; 
             }
             const shortcutItems = document.querySelectorAll('.grid-item span');
             shortcutItems.forEach(item => {
@@ -707,19 +730,22 @@
         }
 
         function updateBlurValue(value) {
-            const backgroundImageUrl = localStorage.getItem('userBackground');
-            if (backgroundImageUrl) {
-                backgroundContainer.style.filter = `blur(${value}px)`;
-            }
+            backgroundContainer.style.filter = `blur(${value}px)`;
         }
 
+        function updateMaskValue(value) {
+            const mask = document.getElementById('mask');
+            mask.style.backgroundColor = `rgba(0, 0, 0, ${value / 100})`; 
+        }
         function setBlur() {
             const blurValue = document.getElementById('blur-range').value;
+            const maskValue = document.getElementById('mask-range').value;            
             backgroundContainer.style.filter = `blur(${blurValue}px)`;
+            updateMaskValue(maskValue); 
             localStorage.setItem('backgroundBlur', blurValue);
+            localStorage.setItem('backgroundMask', maskValue);
             closeBlurDialog();
         }
-
         window.onclick = function(event) {
             const sidebar = document.getElementById('sidebar');
             const toggleButton = document.querySelector('.toggle-button');
@@ -732,7 +758,7 @@
         }
     </script>
 </body>
-<div id="copyright" style="position: fixed; bottom: 1px; left: 50%; transform: translateX(-50%); font-size: 5px; color: rgba(255, 255, 255, 0.7); white-space: nowrap;">
+<div id="copyright" style="position: fixed; bottom: 1px; left: 50%; transform: translateX(-50%); font-size: 10px; color: rgba(255, 255, 255, 0.7); white-space: nowrap; z-index: 500;">
     版权归属：MT论坛@练习时长两年半的水怪
 </div>
 </html>
