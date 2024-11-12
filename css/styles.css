@@ -156,7 +156,7 @@ body {
     pointer-events: auto;
 }
 .grid-item span {
-    font-size: 12px;
+    font-size: 9px;
     text-align: center;
     color: #ffffff; 
     white-space: nowrap;
