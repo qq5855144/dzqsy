@@ -4,6 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主页</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="background-container" id="background-container"></div>
+    <div class="mask" id="mask"></div>
+    <div class="search-container">
+        <div class="engine-selector">
+            <button class="engine-button" onclick="setSearchEngine('bing', this)" style="background-image: url('img/bing.png');"></button>
+            <button class="engine-button" onclick="setSearchEngine('baidu', this)" style="background-image: url('img/baidu.png');"></button>
+            <button class="engine-button" onclick="setSearchEngine('google', this)" style="background-image: url('img/google.png');"></button>
+            <button class="engine-button" onclick="setSearchEngine('yandex', this)" style="background-image: url('img/yandex.png');"></button>
+            <button class="engine-button" onclick="setSearchEngine('bita', this)" style="background-image: url('img/metaso.png');"></button>
+            <button class="engine-button" onclick="setSearchEngine('imageSearch', this)" style="background-image: url('img/quark.png');"></button>
+            <button class="engine-button" onclick="setSearchEngine('apkpure', this)" style="background-image: url('img/apkpure.png');"></button>
+        </div>
+        <div class="suggestions" id="suggestions-box"></div>
+        <div class="search-input-wrapper">
+            <input type="text" class="search-input-style" id="search-input" placeholder="搜索..." 
+       onfocus="document.getElementById('copyright').style.display='none';" 
+       onblur="document.getElementById('copyright').style.display='block'; if(this.value === '') this.placeholder='搜索...';" 
+       onkeypress="if(event.key==='Enter') performSearch()" 
+       oninput="showSuggestions()">
+            <img src="img/sc.png" alt="清除" onclick="clearSearchInput()" class="clear-button">
+        </div>
+    </div>
+    <div class="grid-container" id="shortcut-container"></div>
+    
+    <div class="dialog" id="add-dialog">
+        <h3 style="margin: 0 0 10px;">添加快捷方式</h3>
+        <input type="text" class="search-input-style" id="icon-title" placeholder="请输入标题">
+        <input type="text" class="search-input-style" id="icon-url" placeholder="请输入网页链接">
+        <input type="text" class="search-input-style" id="icon-image" placeholder="请输入图标链接">
+        <div style="display: flex; justify-content: space-between;">
+            <button onclick="chooseImage()">相册</button>
+            <button onclick="addShortcut()">确定</button>
+            <button onclick="closeAddDialog()">关闭</button>
+        </div>
+    </div>
+    <div class="dialog" id="background-dialog" style="display: none;">
+        <h3 style="margin: 0 0 10px;">设置背景图片</h3>
+        <input type="text" class="search-input-style" id="background-url" placeholder="请输入背景图片链接">
+        <div style="display: flex; justify-content: space-between;">
+            <button onclick="chooseBackgroundImage()">相册</button>
+            <button onclick="setBackground()">确定</button>
+            <button onclick="closeBackgroundDialog()">关闭</button>
+        </div>
+    </div>
+    <div class="dialog" id="export-import-dialog" style="display: none;">
+        <h3 style="margin: 0 0 10px;">导入/导出数据</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button onclick="exportData()">导出</button>
+            <button onclick="importData()">恢复</button>
+            <button onclick="closeExportImportDialog()">关闭</button>
+        </div>
+    </div>
+    <div class="dialog" id="blur-dialog" style="display: none;">
+        <h3 style="margin: 0 0 10px;">设置模糊值</h3>
+        <input type="range" id="blur-range" min="0" max="50" value="0" style="width: 100%;" oninput="updateBlurValue(this.value)">
+        <h3 style="margin: 10px 0; text-align: center; font-size: 1.2em;">设置遮罩值</h3>
+        <input type="range" id="mask-range" min="0" max="100" value="0" style="width: 100%;" oninput="updateMaskValue(this.value)">
+        
+        <div style="display: flex; justify-content: space-between;">
+            <button onclick="setBlur()">确定</button>
+            <button onclick="closeBlurDialog()">关闭</button>
+        </div>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <img src="img/tj.png" alt="添加快捷方式" onclick="openAddDialog()" style="cursor:pointer;width:20px;height:20px;">
+            <img src="img/sc.png" alt="删除快捷方式" onclick="toggleDeleteMode()" style="cursor:pointer;width:20px;height:20px;">
+            <img src="img/bj.png" alt="设置背景" onclick="openBackgroundDialog()" style="cursor:pointer;width:20px;height:20px;">
+            <img src="img/dc.png" alt="导入导出" onclick="openExportImportDialog()" style="cursor:pointer;width:20px;height:20px;">
+            <img src="img/text.png" alt="隐藏名称" onclick="toggleShortcutNames()" style="cursor:pointer;width:20px;height:20px;">
+            <img src="img/mf.png" alt="调整模糊" onclick="openBlurDialog()" style="cursor:pointer;width:20px;height:20px;">
+        </div>
+    </div>
+    <img src="img/cd.png" alt="切换侧边栏" class="toggle-button" onclick="toggleSidebar()">
+    
+    <script src="js/script.js"></script>
+</body>
+<div id="copyright" style="position: fixed; bottom: 1px; left: 50%; transform: translateX(-50%); font-size: 5px; color: rgba(255, 255, 255, 0.7); white-space: nowrap; z-index: 500;">
+    版权归属：MT论坛@练习时长两年半的水怪
+</div>
+</html><!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         body {
