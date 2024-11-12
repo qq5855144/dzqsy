@@ -603,6 +603,7 @@
                 const reader = new FileReader();
                 reader.onload = e => {
                     document.getElementById('background-url').value = e.target.result;
+                    setBackground(); 
                 };
                 reader.readAsDataURL(file);
             };
