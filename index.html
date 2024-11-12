@@ -281,8 +281,7 @@
 </head>
 <body>
     <div class="background-container" id="background-container"></div>
-    <div class="mask" id="mask"></div> <!-- 添加遮罩层 -->
-    
+    <div class="mask" id="mask"></div>
     <div class="search-container">
         <div class="engine-selector">
             <button class="engine-button" onclick="setSearchEngine('bing', this)" style="background-image: url('img/bing.png');"></button>
@@ -336,8 +335,6 @@
     <div class="dialog" id="blur-dialog" style="display: none;">
         <h3 style="margin: 0 0 10px;">设置模糊值</h3>
         <input type="range" id="blur-range" min="0" max="50" value="0" style="width: 100%;" oninput="updateBlurValue(this.value)">
-        
-        <!-- 新增遮罩控制条 -->
         <h3 style="margin: 10px 0; text-align: center; font-size: 1.2em;">设置遮罩值</h3>
         <input type="range" id="mask-range" min="0" max="100" value="0" style="width: 100%;" oninput="updateMaskValue(this.value)">
         
@@ -716,6 +713,10 @@
                     const textColor = brightness > 125 ? '#000' : '#FFF'; 
                     document.querySelectorAll('.grid-item span').forEach(item => {
                         item.style.color = textColor;
+                    });
+                    const sidebarButtons = document.querySelectorAll('#sidebar img, .toggle-button');
+                    sidebarButtons.forEach(button => {
+                        button.style.filter = brightness > 125 ? 'invert(1)' : 'invert(0)';
                     });
                 };
             }
