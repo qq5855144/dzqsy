@@ -57,38 +57,6 @@
       box-sizing: border-box;
     }
 
-    .news-section {
-      background-color: #b3cde0;
-    }
-
-    .entertainment-section {
-      background-color: #f6c3d0;
-    }
-
-    .tech-section {
-      background-color: #c9daf8;
-    }
-
-    .sports-section {
-      background-color: #c7e5b7;
-    }
-
-    .finance-section {
-      background-color: #f8d797;
-    }
-
-    .fashion-section {
-      background-color: #e6b9f7;
-    }
-
-    .travel-section {
-      background-color: #b8e1d1;
-    }
-
-    .food-section {
-      background-color: #f7d9c9;
-    }
-
     .section-title {
       font-weight: bold;
       color: #333;
@@ -107,7 +75,7 @@
 
     .green-button {
       padding: 10px 15px;
-      background-color: #4CAF50;
+      background-color: #3498DB;
       color: white;
       border: none;
       border-radius: 5px;
@@ -156,6 +124,14 @@
         window.location.href = searchURL;
       }
     }
+
+    window.onload = function() {
+      const colors = ['#b3cde0', '#f6c3d0', '#c9daf8', '#c7e5b7', '#f8d797', '#e6b9f7', '#b8e1d1', '#f7d9c9'];
+      const sections = document.querySelectorAll('.section');
+      sections.forEach((section, index) => {
+        section.style.backgroundColor = colors[index % colors.length];
+      });
+    };
   </script>
 </head>
 
@@ -169,54 +145,55 @@
       <input type="text" id="searchInput" class="search-input" placeholder="脚本搜索......" onkeypress="performSearch(event)">
     </div>
     <div class="scroll-container">
-      <div class="section news-section">
+      <div class="section">
         <div class="section-title">聚合搜索</div>
-        <div class="description">在网页底部显示一个聚合搜索引擎切换导航</div>
+        <div class="description">在网页底部显示一个聚合搜索引擎切换导航，作者：MT论坛@练习时长两年半的水怪</div>
         <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/513481/聚合搜索.user.js'">安装</button>
       </div>
-      <div class="section entertainment-section">
+      <div class="section">
         <div class="section-title">沉浸式翻译</div>
         <div class="description">一个专注翻译的脚本，众多功能给你带来不一样的翻译体验</div>
         <button class="green-button" onclick="window.location.href='https://download.immersivetranslate.com/immersive-translate.user.js'">安装</button>
       </div>
-      <div class="section tech-section">
+      <div class="section">
         <div class="section-title">广告拦截</div>
         <div class="description">加多重buff的广告拦截脚本，可能有误杀，可以在脚本菜单禁用当前域名拦截</div>
         <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/459944/加多重buff的广告拦截脚本.user.js'">安装</button>
       </div>
-      <div class="section sports-section">
+      <div class="section">
         <div class="section-title">bilibili优化</div>
         <div class="description">免登录（但登录后可以看更多评论）、阻止跳转App、App端推荐视频流、解锁视频画质(番剧解锁需配合其它插件)、美化显示、去广告等</div>
         <button class="green-button" onclick="window.location.href='https://greasyfork.org/zh-CN/scripts/494644-移动端-bilibili优化'">安装</button>
       </div>
-      <div class="section finance-section">
+      <div class="section">
         <div class="section-title">搜索引擎去广告</div>
         <div class="description">谷歌百度搜狗神马360必应头条搜索去广告，适配电脑和手机，谷歌搜索拦截部分内容广场</div>
         <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/437351/搜索引擎去广告.user.js'">安装</button>
       </div>
-      <div class="section fashion-section">
+      <div class="section">
         <div class="section-title">GitHub 中文化</div>
         <div class="description">中文化 GitHub 界面的部分菜单及内容。原作者为楼教主(http://www.52cik.com/)。</div>
         <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/435208/GitHub 中文化插件.user.js'">安装</button>
       </div>
-      <div class="section travel-section">
+      <div class="section">
         <div class="section-title">东方永页机</div>
         <div class="description">终极自动翻页 - 加载并拼接下一分页内容至当前页尾，智能适配任意网页</div>
         <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/438684/Pagetual.user.js'">安装</button>
       </div>
-      <div class="section food-section">
+      <div class="section">
         <div class="section-title">CSDN优化</div>
         <div class="description">支持PC和手机端、屏蔽广告、优化浏览体验、重定向拦截的Url、自动展开全文、自动展开代码块、全文居中、允许复制内容、去除复制内容的小尾巴、自定义屏蔽元素等</div>
         <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/406136/CSDN优化.user.js'">安装</button>
       </div>
-      <div class="section travel-section">
+      <div class="section">
         <div class="section-title">Yandex 汉化</div>
         <div class="description">Yandex 网站 页面汉化</div>
-        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/438870/Yandex 页面汉化.user.js'">安装</button>       </div>
-      <div class="section travel-section">
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/438870/Yandex 页面汉化.user.js'">安装</button>
+      </div>
+      <div class="section">
         <div class="section-title">去除链接重定向</div>
         <div class="description">能原地解析的链接绝不在后台访问，原地解析->自动跳转->后台访问，保证了一定能去除重定向链接</div>
-        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/483475/去除链接重定向.user.js'">安装</button>       
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/483475/去除链接重定向.user.js'">安装</button>     
       </div>
     </div>
   </div>
