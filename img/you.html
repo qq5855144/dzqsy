@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      padding: 15px;
+      box-sizing: border-box;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #3498db;
+      margin-bottom: 25px;
+      font-size: 24px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .scroll-container {
+      overflow-y: auto;
+      width: 100%;
+      flex-grow: 1;
+      margin-bottom: 0;
+      box-sizing: border-box;
+    }
+
+    .section {
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      min-height: 100px;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .news-section {
+      background-color: #b3cde0;
+    }
+
+    .entertainment-section {
+      background-color: #f6c3d0;
+    }
+
+    .tech-section {
+      background-color: #c9daf8;
+    }
+
+    .sports-section {
+      background-color: #c7e5b7;
+    }
+
+    .finance-section {
+      background-color: #f8d797;
+    }
+
+    .fashion-section {
+      background-color: #e6b9f7;
+    }
+
+    .travel-section {
+      background-color: #b8e1d1;
+    }
+
+    .food-section {
+      background-color: #f7d9c9;
+    }
+
+    .section-title {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 18px;
+      text-align: center;
+      transition: color 0.3s ease;
+    }
+
+    .description {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.6;
+      transition: color 0.3s ease;
+    }
+
+    .green-button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      font-size: 14px;
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+
+    .green-button:hover {
+      background-color: #45a049;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .notification-bar {
+      background-color: #eee;
+      padding: 10px;
+      overflow: auto;
+      white-space: nowrap;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+    .search-container {
+      margin-bottom: 15px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .search-input {
+      padding: 12px;
+      width: 100%;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      box-sizing: border-box;
+      outline: none;
+    }
+  </style>
+  <script>
+    function performSearch(event) {
+      if (event.key === 'Enter') {
+        const query = document.getElementById('searchInput').value;
+        const searchURL = 'https://greasyfork.org/zh-CN/scripts?q=' + encodeURIComponent(query);
+        window.location.href = searchURL;
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>脚本合集</h1>
+    <div class="notification-bar">
+      <marquee behavior="scroll" direction="left">此处只搜集个人常用脚本，更多脚本自行搜索</marquee>
+    </div>
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-input" placeholder="脚本搜索......" onkeypress="performSearch(event)">
+    </div>
+    <div class="scroll-container">
+      <div class="section news-section">
+        <div class="section-title">聚合搜索</div>
+        <div class="description">在网页底部显示一个聚合搜索引擎切换导航</div>
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/513481/聚合搜索.user.js'">安装</button>
+      </div>
+      <div class="section entertainment-section">
+        <div class="section-title">沉浸式翻译</div>
+        <div class="description">一个专注翻译的脚本，众多功能给你带来不一样的翻译体验</div>
+        <button class="green-button" onclick="window.location.href='https://download.immersivetranslate.com/immersive-translate.user.js'">安装</button>
+      </div>
+      <div class="section tech-section">
+        <div class="section-title">广告拦截</div>
+        <div class="description">加多重buff的广告拦截脚本，可能有误杀，可以在脚本菜单禁用当前域名拦截</div>
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/459944/加多重buff的广告拦截脚本.user.js'">安装</button>
+      </div>
+      <div class="section sports-section">
+        <div class="section-title">bilibili优化</div>
+        <div class="description">免登录（但登录后可以看更多评论）、阻止跳转App、App端推荐视频流、解锁视频画质(番剧解锁需配合其它插件)、美化显示、去广告等</div>
+        <button class="green-button" onclick="window.location.href='https://greasyfork.org/zh-CN/scripts/494644-移动端-bilibili优化'">安装</button>
+      </div>
+      <div class="section finance-section">
+        <div class="section-title">搜索引擎去广告</div>
+        <div class="description">谷歌百度搜狗神马360必应头条搜索去广告，适配电脑和手机，谷歌搜索拦截部分内容广场</div>
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/437351/搜索引擎去广告.user.js'">安装</button>
+      </div>
+      <div class="section fashion-section">
+        <div class="section-title">GitHub 中文化</div>
+        <div class="description">中文化 GitHub 界面的部分菜单及内容。原作者为楼教主(http://www.52cik.com/)。</div>
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/435208/GitHub 中文化插件.user.js'">安装</button>
+      </div>
+      <div class="section travel-section">
+        <div class="section-title">东方永页机</div>
+        <div class="description">终极自动翻页 - 加载并拼接下一分页内容至当前页尾，智能适配任意网页</div>
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/438684/Pagetual.user.js'">安装</button>
+      </div>
+      <div class="section food-section">
+        <div class="section-title">CSDN优化</div>
+        <div class="description">支持PC和手机端、屏蔽广告、优化浏览体验、重定向拦截的Url、自动展开全文、自动展开代码块、全文居中、允许复制内容、去除复制内容的小尾巴、自定义屏蔽元素等</div>
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/406136/CSDN优化.user.js'">安装</button>
+      </div>
+      <div class="section travel-section">
+        <div class="section-title">Yandex 汉化</div>
+        <div class="description">Yandex 网站 页面汉化</div>
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/438870/Yandex 页面汉化.user.js'">安装</button>       </div>
+      <div class="section travel-section">
+        <div class="section-title">去除链接重定向</div>
+        <div class="description">能原地解析的链接绝不在后台访问，原地解析->自动跳转->后台访问，保证了一定能去除重定向链接</div>
+        <button class="green-button" onclick="window.location.href='https://update.greasyfork.org/scripts/483475/去除链接重定向.user.js'">安装</button>       
+      </div>
+    </div>
+  </div>
+</body>
+</html>
