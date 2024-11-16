@@ -284,10 +284,8 @@ function loadShortcuts() {
     if (shortcuts.length === 0) {
         const defaultShortcuts = [
             { title: '个人主页', url: 'https://link3.cc/cbkey', image: 'img/zy.png' },
-            { title: '哔哩哔哩', url: 'https://m.bilibili.com/', image: 'img/bilibili.png' },
             { title: 'Github', url: 'https://github.com/', image: 'img/github.png' },
-            { title: '油猴', url: 'https://greasyfork.org/zh-CN', image: 'img/you1.png' },
-            { title: '脚本合集', url: 'https://gitlink.org.cn/damengzhu/XBrowser-User-Scripts/tree/master/X浏览器脚本整理.md', image: 'img/js.png' }
+            {title: 'AGE动漫', url: 'https://m.agedm.org/#/update', image: 'img/age.png'},{title: '哔哩哔哩', url: 'https://m.bilibili.com/', image: 'img/bilibili.png'},{title: '音乐', url: 'https://tools.liumingye.cn/music/#/explore/artist', image: 'img/my.png'}           
         ];
         localStorage.setItem('shortcuts', JSON.stringify(defaultShortcuts));
         defaultShortcuts.forEach(shortcut => createShortcutElement(shortcut));
