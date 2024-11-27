@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>极简主页</title>
+<title>主页</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <style>
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;margin:0;padding:0;height:100vh;overflow:hidden;position:relative;}
@@ -11,7 +11,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 .mask{position:absolute;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);z-index:2;backdrop-filter:blur(0px);}
 .search-container{position:fixed;bottom:33px;left:50%;transform:translateX(-50%);width:80%;max-width:500px;z-index:1000;}
 .search-input-wrapper{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;}
-.search-input-style{width:100%;height:40px;padding:10px;border:1px solid #ccc;border-radius:15px;box-shadow:inset 0 2px 5px rgba(0,0,0,0.3),0 2px 10px rgba(0,0,0,0.2);outline:none;box-sizing:border-box;background-color:rgba(240,240,244,0.8);color:#2c2c2c;backdrop-filter:blur(5px);transition:width 0.3s;}
+.search-input-style{width:100%;height:40px;padding:10px;border:1px solid #ccc;border-radius:15px;box-shadow:inset 0 2px 5px rgba(0,0,0,0.2);outline:none;box-sizing:border-box;background-color:rgba(240,240,244,0.8);color:#2c2c2c;backdrop-filter:blur(5px);transition:width 0.3s;}
 .search-input-style:focus{width:120%;}
 .clear-button{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;cursor:pointer;transition:transform 0.3s;}
 .search-input-style:focus+.clear-button{transform:translateY(-50%) translateX(30px);}
@@ -20,26 +20,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 .suggestion-item{padding:10px;cursor:pointer;transition:background-color 0.3s;display:flex;align-items:center;}
 .suggestion-item:hover{background-color:rgba(241,241,241,0.8);}
 .suggestion-icon{width:20px;height:20px;cursor:pointer;margin:0 5px;vertical-align:middle;}
-.engine-selector{display:none;position:fixed;bottom:1px;left:50%;transform:translateX(-50%);display:flex;overflow-x:auto;max-width:96%;z-index:1000;white-space:nowrap;}
-.engine-button{width:54px;height:30px;padding:0;border:1px solid #ccc;border-radius:7px;background-color:rgba(240,240,244,0.8);color:transparent;font-size:14px;cursor:pointer;margin:0 1px;background-size:contain;background-repeat:no-repeat;background-position:center;backdrop-filter:blur(5px);box-shadow:inset 0 2px 5px rgba(0,0,0,0.2),0 2px 10px rgba(0,0,0,0.2);transition:border-color 0.3s,box-shadow 0.3s;}
+.engine-container{display:none;position:fixed;bottom:2px;left:2%;width:96%;height:30px;overflow:hidden;justify-content:center;z-index:1000;background-color:transparent;margin-top:1px;}
+.engine-display{display:flex;overflow-x:auto;white-space:nowrap;height:100%;gap:0px;}
+.engine-button{width:55.5px;height:30px;padding:0;border:1px solid #ccc;border-radius:7px;background-color:rgba(240,240,244,0.8);color:transparent;font-size:14px;cursor:pointer;margin:0 1px;background-size:contain;background-repeat:no-repeat;background-position:center;backdrop-filter:blur(5px);box-shadow:inset 0 2px 5px rgba(0,0,0,0.2),0 2px 10px rgba(0,0,0,0.2);transition:border-color 0.3s,box-shadow 0.3s;flex-shrink:0;}
 .engine-button:focus{outline:none;border-color:#ffb61e;}
 .engine-button.selected{border:1px solid #ffb61e;color:transparent;}
-.grid-container{display:flex;flex-wrap:wrap;gap:14px;padding:10px;position:fixed;top:50px;left:50%;transform:translateX(-50%);width:calc(90% - 12px);max-width:600px;max-height:255px;overflow-y:auto;background-color:transparent;z-index:500;justify-content:flex-start;}
-@media (orientation:landscape){.grid-container{gap:18.5px;}}
-.grid-item{flex:0 0 auto;width:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;}
-.grid-item img{width:38px;height:38px;border-radius:20%;margin-bottom:5px;pointer-events:auto;}
-.grid-item span{font-size:9px;text-align:center;color:#ffffff;white-space:nowrap;overflow:hidden;width:50px;}
-.delete-icon{width:15px;height:15px;position:absolute;top:-5px;right:-5px;cursor:pointer;display:none;background-color:rgba(0,0,0,0);border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;}
-.drag-handle{background-color:rgba(0,0,0,0);position:absolute;top:0;left:0;right:0;bottom:0;cursor:move;z-index:10;}
+.grid-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(66px,1fr));grid-template-rows:repeat(auto-fill,68px);gap:0;margin:10px 0;max-width:100%;max-height:479px;position:fixed;top:50px;left:15px;z-index:500;overflow-y:auto;overflow-x:hidden;}
+@media (orientation:portrait){.grid-container{max-width:calc(100% - 30px);left:15px;right:15px;}}
+@media (orientation:landscape){.grid-container{max-width:calc(100% - 74px);left:37px;right:37px;}}
+.grid-item{display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;width:66px;height:68px;}
+.grid-item img{width:40px;height:40px;border-radius:20%;background-color: rgba(255, 255, 255, 0.1);box-shadow:0 2px 5px rgba(0,0,0,0.2);margin-bottom:2px;cursor:pointer;}
+.grid-item span{font-size:10px;text-align:center;color:#ffffff;white-space:nowrap;overflow:hidden;width:66px;cursor:pointer;}
+.drag-handle{width:100%;height:100%;position:absolute;top:0;left:0;cursor:move;z-index:1;}
 .dialog{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(240,240,244,0.8);border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.3);padding:20px;z-index:2000;width:300px;border:1px solid #ccc;box-shadow:inset 0 2px 5px rgba(0,0,0,0.3),0 2px 10px rgba(0,0,0,0.2);box-sizing:border-box;backdrop-filter:blur(5px);}
 .dialog h3{margin:0 0 15px;text-align:center;color:#2c2c2c;}
 .dialog input[type="text"]{margin-bottom:10px;padding:10px 15px;border:1px solid #ccc;box-shadow:inset 0 2px 5px rgba(0,0,0,0.3),0 2px 10px rgba(0,0,0,0.2);border-radius:10px;background-color:rgba(240,240,244,0.5);color:#2c2c2c;font-size:14px;box-sizing:border-box;transition:background-color 0.3s,transform 0.2s;backdrop-filter:blur(5px);}
-.dialog input[type="text"].dialog-input {margin-bottom: 10px;padding: 10px 15px;border: 1px solid #ccc;box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.2);border-radius: 10px;background-color: rgba(240, 240, 244, 0);color: #2c2c2c;font-size: 14px;box-sizing: border-box;transition: background-color 0.3s, transform 0.2s;backdrop-filter: blur(5px);}
-.dialog input[type="text"].dialog-input:focus {outline: none;width: 100%;}
-.dialog input[type="range"]{width:100%;margin-bottom:20px;}
+.dialog input[type="text"].dialog-input:focus{outline:none;width:100%;}
 .dialog button{flex:1;margin:0 5px;padding:10px 15px;border:1px solid #ccc;box-shadow:inset 0 2px 5px rgba(0,0,0,0.3),0 2px 10px rgba(0,0,0,0.2);border-radius:10px;background-color:rgba(240,240,244,0.5);color:#2c2c2c;font-size:14px;cursor:pointer;transition:background-color 0.3s,transform 0.2s;}
 .dialog button:hover{background-color:rgba(240,240,244,0.5);transform:translateY(-1px);}
 .dialog button:active{transform:translateY(1px);}
+.control-panel{display:none;position:absolute;top:0;left:0;background-color:rgba(240,240,244,0.8);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.2);z-index:1000;padding:10px;transition:transform 0.2s ease,opacity 0.2s ease;opacity:0;}
+.control-button{padding:2px 5px;margin:2px;cursor:pointer;background-color:transparent;color:red;border:none;border-radius:5px;transition:background-color 0.3s;}
+.control-button:hover{background-color:#ff1c1c;}
 .sidebar{position:fixed;top:0;right:-50px;width:50px;height:100vh;background-color:rgba(255,255,255,0.1);backdrop-filter:blur(50px);box-shadow:-2px 0 5px rgba(0,0,0,0.5);transition:right 0.3s;z-index:2000;}
 .sidebar.open{right:0;}
 .sidebar-content{padding:10px;margin-top:50px;display:flex;flex-direction:column;gap:20px;}
@@ -56,21 +58,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 </div>
 <div class="suggestions" id="suggestions-box"></div>
 </div>
-<div class="engine-selector" id="engine-selector">
+<div class="engine-container" id="engine-container">
+<div class="engine-display" id="engine-display">
 <button class="engine-button" onclick="setSearchEngine('bing',this)" style="background-image:url('img/bing.png');" onmousedown="event.preventDefault();"></button>
 <button class="engine-button" onclick="setSearchEngine('baidu',this)" style="background-image:url('img/baidu.png');" onmousedown="event.preventDefault();"></button>
 <button class="engine-button" onclick="setSearchEngine('google',this)" style="background-image:url('img/google.png');" onmousedown="event.preventDefault();"></button>
 <button class="engine-button" onclick="setSearchEngine('yandex',this)" style="background-image:url('img/yandex.png');" onmousedown="event.preventDefault();"></button>
 <button class="engine-button" onclick="setSearchEngine('bita',this)" style="background-image:url('img/metaso.png');" onmousedown="event.preventDefault();"></button>
+<button class="engine-button" onclick="setSearchEngine('zhihu', this)" style="background-image:url('img/zhihu.png');" onmousedown="event.preventDefault();"></button>
 <button class="engine-button" onclick="setSearchEngine('imageSearch',this)" style="background-image:url('img/quark.png');" onmousedown="event.preventDefault();"></button>
 <button class="engine-button" onclick="setSearchEngine('apkpure',this)" style="background-image:url('img/apkpure.png');" onmousedown="event.preventDefault();"></button>
+<button class="engine-button" onclick="setSearchEngine('backdata',this)" style="background-image:url('img/backdata.png');" onmousedown="event.preventDefault();"></button>
+</div>
 </div>
 <div class="grid-container" id="shortcut-container"></div>
 <div class="dialog" id="add-dialog">
 <h3 style="margin:0 0 10px;">添加快捷方式</h3>
-<input type="text" class="search-input-style dialog-input" id="icon-title" placeholder="请输入标题">
-<input type="text" class="search-input-style dialog-input" id="icon-url" placeholder="请输入网页链接">
-<input type="text" class="search-input-style dialog-input" id="icon-image" placeholder="请输入图标链接">
+<input type="text" class="search-input-style dialog-input" id="icon-title" placeholder="请输入标题" onfocus="hideSearch();" onblur="showSearch();">
+<input type="text" class="search-input-style dialog-input" id="icon-url" placeholder="请输入网页链接" onfocus="hideSearch();" onblur="showSearch();" oninput="fetchFavicon(this.value)">
+<input type="text" class="search-input-style dialog-input" id="icon-image" placeholder="请输入图标链接（可选）" onfocus="hideSearch();" onblur="showSearch();">
 <div style="display:flex;justify-content:space-between;">
 <button onclick="chooseImage()">相册</button>
 <button onclick="addShortcut()">确定</button>
@@ -79,7 +85,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 </div>
 <div class="dialog" id="background-dialog" style="display:none;">
 <h3 style="margin:0 0 10px;">设置背景图片</h3>
-<input type="text" class="search-input-style dialog-input" id="background-url" placeholder="请输入背景图片链接">
+<input type="text" class="search-input-style dialog-input" id="background-url" placeholder="请输入背景图片链接" onfocus="hideSearch();" onblur="showSearch();">
 <div style="display:flex;justify-content:space-between;">
 <button onclick="chooseBackgroundImage()">相册</button>
 <button onclick="setBackground()">确定</button>
@@ -106,472 +112,70 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 </div>
 <div class="sidebar" id="sidebar">
 <div class="sidebar-content">
-<img src="img/tj.png" alt="添加快捷方式" onclick="openAddDialog();toggleSidebar();" style="cursor:pointer;width:20px;height:20px;">
-<img src="img/sc1.png" alt="删除快捷方式" onclick="toggleDeleteMode();toggleSidebar();" style="cursor:pointer;width:20px;height:20px;">
-<img src="img/bj.png" alt="设置背景" onclick="openBackgroundDialog();toggleSidebar();" style="cursor:pointer;width:20px;height:20px;">
-<img src="img/dc.png" alt="导入导出" onclick="openExportImportDialog();toggleSidebar();" style="cursor:pointer;width:20px;height:20px;">
-<img src="img/text.png" alt="隐藏名称" onclick="toggleShortcutNames();toggleSidebar();" style="cursor:pointer;width:20px;height:20px;">
-<img src="img/mf.png" alt="调整模糊" onclick="openBlurDialog();toggleSidebar();" style="cursor:pointer;width:20px;height:20px;">
-<img src="img/you.png" alt="进入 you.html" onclick="window.location.href='img/you.html';" style="cursor:pointer;width:20px;height:20px;">
+<img src="img/tj.svg" alt="添加快捷方式" onclick="openAddDialog();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
+<img src="img/bj.svg" alt="设置背景" onclick="openBackgroundDialog();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
+<img src="img/dc.svg" alt="导入导出" onclick="openExportImportDialog();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
+<img src="img/txt.svg" alt="隐藏名称" onclick="toggleShortcutNames();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
+<img src="img/mf.svg" alt="调整模糊" onclick="openBlurDialog();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
+<img src="img/you.svg" alt="进入 you.html" onclick="window.location.href='img/you.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
+<img src="img/mm.svg" alt="进入 mm.html" onclick="window.location.href='img/mm.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 </div>
 </div>
-<img src="img/cd.png" alt="切换侧边栏" class="toggle-button" onclick="toggleSidebar()">
+<div class="control-panel" id="control-panel">
+<button class="control-button" id="edit-button" onclick="editShortcut()">编辑</button>
+<button class="control-button" id="delete-button" onclick="deleteShortcut()">删除</button>
+</div>
+<img src="img/MdiLeaf.svg" alt="切换快捷访问" style="position:fixed; top:15px; left:20px; cursor:pointer; z-index:2001; width:25px; height:25px;" onclick="toggleShortcutVisibility()">
+<img src="img/cd.svg" alt="唤醒侧边栏" style="position:fixed; top:20px; right:20px; cursor:pointer; z-index:2002; width:20px; height:20px;" onclick="toggleSidebar()">
 <script>
-let searchEngine='bing';let deleteMode=false;let showShortcutNames=localStorage.getItem('showShortcutNames')!=='false';const storedBackground=localStorage.getItem('userBackground');const backgroundContainer=document.getElementById('background-container');const mask=document.getElementById('mask');const storedBlurValue=localStorage.getItem('blurValue')||0;const storedMaskValue=localStorage.getItem('maskValue')||0;mask.style.backdropFilter=`blur(${storedBlurValue}px)`;mask.style.backgroundColor=`rgba(0,0,0,${storedMaskValue/100})`;if(storedBackground){backgroundContainer.style.backgroundImage=`url('${storedBackground}')`; }
-
-let isSearchFocused = false;
-let searchQuery = sessionStorage.getItem('searchQuery') || '';
-
-document.getElementById('search-input').value = searchQuery;
-
-function toggleEngineSelector() {
-    const engineSelector = document.getElementById('engine-selector');
-    engineSelector.style.display = isSearchFocused ? 'flex' : 'none';
-}
-
-window.onload = function () {
-    loadShortcuts();
-    updateTextColorBasedOnBackground();
-    checkCopyright();
-    toggleEngineSelector();
-};
-
-function checkCopyright() {
-    const copyright = document.getElementById('copyright');
-    if (!copyright) {
-        document.body.style.display = 'none';
-    }
-}
-
-class SearchHint {
-    constructor() {
-        this.searchInput = document.getElementById('search-input');
-        this.suggestionsBox = document.getElementById('suggestions-box');
-        this.init();
-    }
-    init() {
-        this.watchInput();
-        this.searchInput.onblur = () => {
-            setTimeout(() => {
-                this.suggestionsBox.style.display = 'none';
-            }, 200);
-            setSearchFocus(false);
-        };
-    }
-    watchInput() {
-        this.searchInput.onkeyup = () => {
-            if (this.searchInput.value.length === 0) {
-                this.clearSuggestions();
-                return;
-            }
-            this.fetchSuggestions();
-        };
-        this.searchInput.onfocus = () => {
-            setSearchFocus(true);
-            if (this.searchInput.value.length > 0) {
-                this.suggestionsBox.style.display = 'block';
-            }
-        };
-    }
-    fetchSuggestions() {
-        const script = document.createElement('script');
-        script.src = `https://www.baidu.com/su?wd=${encodeURIComponent(this.searchInput.value)}&cb=showSuggestions`;
-        document.body.appendChild(script);
-        document.body.removeChild(script);
-    }
-    clearSuggestions() {
-        this.suggestionsBox.innerHTML = '';
-        this.suggestionsBox.style.display = 'none';
-    }
-    showMsg(msg) {
-        let str = msg.s.map(suggestion => `
-            <div class="suggestion-item">
-                <img src="img/ss.png" alt="搜索" class="suggestion-icon" onclick="performSearchWithSuggestion('${suggestion}'); event.stopPropagation();">
-                <span onclick="performSearchWithSuggestion('${suggestion}'); event.stopPropagation();">${suggestion}</span>
-                <img src="img/lt.png" alt="替换" class="suggestion-icon" onmousedown="replaceSearchInput('${suggestion}', event);">
-            </div>
-        `).join('');
-        this.suggestionsBox.innerHTML = str;
-        this.suggestionsBox.style.display = str ? 'block' : 'none';
-    }
-}
-
-function showSuggestions(msg) {
-    new SearchHint().showMsg(msg);
-}
-
-function performSearchWithSuggestion(suggestion) {
-    const searchInput = document.getElementById('search-input');
-    searchInput.value = suggestion; 
-    performSearch(); 
-}
-
-function replaceSearchInput(suggestion, event) {
-    event.preventDefault(); // Prevent default behavior
-    const searchInput = document.getElementById('search-input');
-    searchInput.value = suggestion; 
-    // Keep the suggestions box visible
-    const searchHint = new SearchHint();
-    searchHint.fetchSuggestions(); // Re-fetch suggestions based on the new input
-}
-
-function setSearchEngine(engine, button) {
-    searchEngine = engine;
-    document.querySelectorAll('.engine-button').forEach(btn => btn.classList.remove('selected'));
-    button.classList.add('selected');
-    const query = document.getElementById('search-input').value;
-    if (query) {
-        performSearch(); 
-    }
-}
-
-function selectSuggestion(suggestion) {
-    const searchInput = document.getElementById('search-input');
-    searchInput.value = suggestion; 
-    performSearch(); 
-}
-
-function performSearch() {
-    const query = document.getElementById('search-input').value;
-    sessionStorage.setItem('searchQuery', query);
-    if (!query) return;
-
-    const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;
-    if (urlPattern.test(query)) {
-        window.open(query.startsWith('http') ? query : 'http://' + query, '_self');
-        resetSearchInput();
-        return;
-    }
-
-    const searchUrls = {
-        bing: `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
-        baidu: `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`,
-        google: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
-        yandex: `https://www.yandex.com/search/touch/?text=${encodeURIComponent(query)}`,
-        bita: `https://metaso.cn/?q=${encodeURIComponent(query)}`,
-        imageSearch: `https://vt.quark.cn/blm/search-pic-list-203/index?type=pic&source=sc&scname=life_show_general_image&hid=3a4f9367b6e04330a921841a61079a36&uid=2ac24681ee9b49d7a5beaaf6cd653c32|||1730046378&uc_param_str=dnntnwvepffrgibijbprsvdsdicheiniut&from=&databucket=new2&fromdetail=3#/` + encodeURIComponent(query),
-        apkpure: `https://apkpure.com/search?q=${encodeURIComponent(query)}`
-    };
-
-    window.open(searchUrls[searchEngine], '_self');
-    resetSearchInput();
-}
-
-function resetSearchInput() {
-    const searchInput = document.getElementById('search-input');
-    searchInput.value = '';
-    searchInput.blur();
-    setSearchFocus(false);
-}
-
-function setSearchFocus(focused) {
-    isSearchFocused = focused;
-    sessionStorage.setItem('isSearchFocused', focused);
-    toggleEngineSelector();
-}
-
-function clearSearchInput() {
-    document.getElementById('search-input').value = '';
-    document.getElementById('suggestions-box').style.display = 'none';
-    document.querySelector('.clear-button').style.transform = 'translateY(-50%)';
-}
-
-function loadShortcuts() {
-    const shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
-    const shortcutContainer = document.getElementById('shortcut-container');
-    shortcutContainer.innerHTML = '';
-
-    if (shortcuts.length === 0) {
-        const defaultShortcuts = [
-           {title: '个人主页', url: 'https://link3.cc/cbkey', image: 'img/zy.png'},{title: 'Github', url: 'https://github.com/', image: 'img/github.png'},{title: 'AGE动漫', url: 'https://m.agedm.org/#/update', image: 'img/age.png'},{title: '哔哩哔哩', url: 'https://m.bilibili.com/', image: 'img/bilibili.png'},{title: '音乐', url: 'https://tools.liumingye.cn/music/#/explore/artist', image: 'img/my.png'}          
-        ];
-        localStorage.setItem('shortcuts', JSON.stringify(defaultShortcuts));
-        defaultShortcuts.forEach(shortcut => createShortcutElement(shortcut));
-    } else {
-        shortcuts.forEach(createShortcutElement);
-    }
-}
-
-function createShortcutElement({ title, url, image }) {
-    const shortcutContainer = document.getElementById('shortcut-container');
-    const newItem = document.createElement('div');
-    newItem.className = 'grid-item';
-    newItem.setAttribute('draggable', 'true');
-    newItem.onclick = () => { if (!deleteMode) { window.open(url, '_self'); } };
-    newItem.innerHTML = `
-        <img src="${image}" alt="${title}" data-url="${url}">
-        <span style="display: ${showShortcutNames ? 'block' : 'none'};">${title}</span>
-        <div class="delete-icon" style="display: ${deleteMode ? 'flex' : 'none'};">
-            <img src="img/x.png" alt="删除" style="width: 15px; height: 15px;" onclick="removeShortcut(event, '${title}')">
-        </div>
-        <div class="drag-handle"></div>`;
-    newItem.ondragstart = (event) => { event.dataTransfer.setData('text/plain', JSON.stringify({ title, url, image })); };
-    shortcutContainer.appendChild(newItem);
-}
-
-const shortcutContainer = document.getElementById('shortcut-container');
-shortcutContainer.addEventListener('dragover', (event) => { event.preventDefault(); });
-
-shortcutContainer.addEventListener('drop', (event) => {
-    event.preventDefault();
-    const draggedData = event.dataTransfer.getData('text/plain');
-    const { title, url, image } = JSON.parse(draggedData);
-    const draggedElement = [...document.querySelectorAll('.grid-item')].find(item => { return item.querySelector('span').textContent === title; });
-    const targetElement = event.target.closest('.grid-item');
-    if (targetElement && draggedElement !== targetElement) {
-        const container = document.getElementById('shortcut-container');
-        const draggedIndex = [...container.children].indexOf(draggedElement);
-        const targetIndex = [...container.children].indexOf(targetElement);
-        if (draggedIndex < targetIndex) {
-            container.insertBefore(draggedElement, targetElement.nextSibling);
-        } else {
-            container.insertBefore(draggedElement, targetElement);
-        }
-        saveShortcutsOrder();
-    }
-});
-
-function saveShortcutsOrder() {
-    const shortcuts = [...document.querySelectorAll('.grid-item')].map(item => {
-        const title = item.querySelector('span').textContent;
-        const url = item.querySelector('img').dataset.url;
-        const image = item.querySelector('img').src;
-        return { title, url, image };
-    });
-    localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
-}
-
-function openAddDialog() {
-    document.getElementById('add-dialog').style.display = 'block';
-}
-
-function closeAddDialog() {
-    document.getElementById('add-dialog').style.display = 'none';
-}
-
-function addShortcut() {
-    const title = document.getElementById('icon-title').value;
-    const url = document.getElementById('icon-url').value;
-    const image = document.getElementById('icon-image').value;
-    if (!title || !url || !image) {
-        alert('请填写所有字段！');
-        return;
-    }
-    if (image.startsWith('data:image/')) {
-        saveShortcut(title, url, image);
-    } else {
-        fetch(image).then(res => res.blob()).then(blob => {
-            const reader = new FileReader();
-            reader.onloadend = () => saveShortcut(title, url, reader.result);
-            reader.readAsDataURL(blob);
-        }).catch(() => alert('图标链接无效，请确保链接正确！'));
-    }
-}
-
-function saveShortcut(title, url, image) {
-    const shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
-    shortcuts.push({ title, url, image });
-    localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
-    createShortcutElement({ title, url, image });
-    closeAddDialog();
-    clearInputFields();
-    updateTextColorBasedOnBackground();
-}
-
-function clearInputFields() {
-    document.getElementById('icon-title').value = '';
-    document.getElementById('icon-url').value = '';
-    document.getElementById('icon-image').value = '';
-}
-
-function chooseImage() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = event => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById('icon-image').value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    };
-    input.click();
-}
-
-function openBackgroundDialog() {
-    document.getElementById('background-dialog').style.display = 'block';
-}
-
-function closeBackgroundDialog() {
-    document.getElementById('background-dialog').style.display = 'none';
-}
-
-function setBackground() {
-    const url = document.getElementById('background-url').value;
-    if (url) {
-        backgroundContainer.style.backgroundImage = `url('${url}')`;
-        localStorage.setItem('userBackground', url);
-        closeBackgroundDialog();
-        updateTextColorBasedOnBackground();
-    } else {
-        alert('请填写背景图片链接！');
-    }
-}
-
-function chooseBackgroundImage() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = event => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById('background-url').value = e.target.result;
-            setBackground();
-        };
-        reader.readAsDataURL(file);
-    };
-    input.click();
-}
-
-function openExportImportDialog() {
-    document.getElementById('export-import-dialog').style.display = 'block';
-}
-
-function exportData() {
-    const shortcuts = localStorage.getItem('shortcuts');
-    const userBackground = localStorage.getItem('userBackground');
-    const dataToExport = { shortcuts: shortcuts ? JSON.parse(shortcuts) : [], userBackground: userBackground || '' };
-    const blob = new Blob([JSON.stringify(dataToExport)], { type: 'application/json' });
-    saveAs(blob, 'data.json');
-}
-
-function importData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = event => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const data = JSON.parse(e.target.result);
-            if (data.shortcuts) {
-                localStorage.setItem('shortcuts', JSON.stringify(data.shortcuts));
-                loadShortcuts();
-            }
-            if (data.userBackground) {
-                localStorage.setItem('userBackground', data.userBackground);
-                backgroundContainer.style.backgroundImage = `url('${data.userBackground}')`;
-                updateTextColorBasedOnBackground();
-            }
-            closeExportImportDialog();
-        };
-        reader.readAsText(file);
-    };
-    input.click();
-}
-
-function closeExportImportDialog() {
-    document.getElementById('export-import-dialog').style.display = 'none';
-}
-
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
-}
-
-function toggleDeleteMode() {
-    deleteMode = !deleteMode;
-    loadShortcuts();
-}
-
-function removeShortcut(event, title) {
-    event.stopPropagation();
-    let shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
-    shortcuts = shortcuts.filter(item => item.title !== title);
-    localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
-    loadShortcuts();
-    updateTextColorBasedOnBackground();
-}
-
-function toggleShortcutNames() {
-    showShortcutNames = !showShortcutNames;
-    localStorage.setItem('showShortcutNames', showShortcutNames);
-    const shortcutItems = document.querySelectorAll('.grid-item span');
-    shortcutItems.forEach(item => {
-        item.style.display = showShortcutNames ? 'block' : 'none';
-    });
-}
-
-function updateTextColorBasedOnBackground() {
-    const backgroundImageUrl = localStorage.getItem('userBackground');
-    if (backgroundImageUrl) {
-        const img = new Image();
-        img.src = backgroundImageUrl;
-        img.crossOrigin = 'Anonymous';
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
-            let r = 0, g = 0, b = 0;
-            const pixelCount = data.length / 4;
-            for (let i = 0; i < pixelCount; i++) {
-                r += data[i * 4];
-                g += data[i * 4 + 1];
-                b += data[i * 4 + 2];
-            }
-            r = Math.floor(r / pixelCount);
-            g = Math.floor(g / pixelCount);
-            b = Math.floor(b / pixelCount);
-            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            const textColor = brightness > 128 ? '#000' : '#FFF';
-            document.querySelectorAll('.grid-item span').forEach(item => {
-                item.style.color = textColor;
-            });
-            const sidebarButtons = document.querySelectorAll('#sidebar img,.toggle-button');
-            sidebarButtons.forEach(button => {
-                button.style.filter = brightness > 128 ? 'invert(1)' : 'invert(0)';
-            });
-        };
-    }
-}
-
-function openBlurDialog() { document.getElementById('blur-dialog').style.display = 'block'; }
-function closeBlurDialog() { document.getElementById('blur-dialog').style.display = 'none'; }
-
-function updateBlurValue(value) {
-    mask.style.backdropFilter = `blur(${value}px)`;
-}
-
-function updateMaskValue(value) {
-    mask.style.backgroundColor = `rgba(0,0,0,${value / 100})`;
-}
-
-function setBlur() {
-    const blurValue = document.getElementById('blur-range').value;
-    const maskValue = document.getElementById('mask-range').value;
-    mask.style.backdropFilter = `blur(${blurValue}px)`;
-    mask.style.backgroundColor = `rgba(0,0,0,${maskValue / 100})`;
-    localStorage.setItem('blurValue', blurValue);
-    localStorage.setItem('maskValue', maskValue);
-    closeBlurDialog();
-}
-
-window.onclick = function (event) {
-    const sidebar = document.getElementById('sidebar');
-    const toggleButton = document.querySelector('.toggle-button');
-    if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-        sidebar.classList.remove('open');
-        if (deleteMode) {
-            toggleDeleteMode();
-        }
-    }
-};
+let searchEngine='bing',deleteMode=false,showShortcutNames=localStorage.getItem('showShortcutNames')!=='false',storedBackground=localStorage.getItem('userBackground'),backgroundContainer=document.getElementById('background-container'),mask=document.getElementById('mask'),storedBlurValue=localStorage.getItem('blurValue')||0,storedMaskValue=localStorage.getItem('maskValue')||0;mask.style.backdropFilter=`blur(${storedBlurValue}px)`;mask.style.backgroundColor=`rgba(0,0,0,${storedMaskValue/100})`;if(storedBackground){backgroundContainer.style.backgroundImage=`url('${storedBackground}')`; }let isSearchFocused=false,searchQuery=sessionStorage.getItem('searchQuery')||'';document.getElementById('search-input').value=searchQuery;let isEditing=false,currentEditIndex=-1;window.onload=function(){loadShortcuts();updateTextColorBasedOnBackground();const storedVisibility=localStorage.getItem('shortcutsVisible');if(storedVisibility!==null){shortcutsVisible=storedVisibility==='true';}const shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.style.display=shortcutsVisible?'grid':'none';};class SearchHint{constructor(){this.searchInput=document.getElementById('search-input');this.suggestionsBox=document.getElementById('suggestions-box');this.init();}
+init(){this.watchInput();this.searchInput.onblur=()=>{setTimeout(()=>{this.suggestionsBox.style.display='none';},200);setSearchFocus(false);};}
+watchInput(){this.searchInput.onkeyup=()=>{if(this.searchInput.value.length===0){this.clearSuggestions();return;}this.fetchSuggestions();};this.searchInput.onfocus=()=>{setSearchFocus(true);if(this.searchInput.value.length>0){this.suggestionsBox.style.display='block';}};}
+fetchSuggestions(){const script=document.createElement('script');script.src=`https://www.baidu.com/su?wd=${encodeURIComponent(this.searchInput.value)}&cb=showSuggestions`;document.body.appendChild(script);document.body.removeChild(script);}
+clearSuggestions(){this.suggestionsBox.innerHTML='';this.suggestionsBox.style.display='none';}
+showMsg(msg){let str=msg.s.map(suggestion=>`<div class="suggestion-item"><img src="img/ss.png" alt="搜索" class="suggestion-icon" onclick="performSearchWithSuggestion('${suggestion}');event.stopPropagation();"><span onclick="performSearchWithSuggestion('${suggestion}');event.stopPropagation();">${suggestion}</span><img src="img/lt.png" alt="替换" class="suggestion-icon" onmousedown="replaceSearchInput('${suggestion}',event);"></div>`).join('');this.suggestionsBox.innerHTML=str;this.suggestionsBox.style.display=str?'block':'none';}}
+function showSuggestions(msg){new SearchHint().showMsg(msg);}
+function performSearchWithSuggestion(suggestion){const searchInput=document.getElementById('search-input');searchInput.value=suggestion;performSearch();}
+function replaceSearchInput(suggestion,event){event.preventDefault();const searchInput=document.getElementById('search-input');searchInput.value=suggestion;new SearchHint().fetchSuggestions();}
+function setSearchEngine(engine,button){searchEngine=engine;document.querySelectorAll('.engine-button').forEach(btn=>btn.classList.remove('selected'));button.classList.add('selected');const query=document.getElementById('search-input').value;if(query){performSearch();}}
+function performSearch(){const query=document.getElementById('search-input').value;sessionStorage.setItem('searchQuery',query);if(!query)return;const urlPattern=/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;if(urlPattern.test(query)){window.open(query.startsWith('http')?query:'http://'+query,'_self');resetSearchInput();return;}const searchUrls={bing:`https://www.bing.com/search?q=${encodeURIComponent(query)}`,baidu:`https://www.baidu.com/s?wd=${encodeURIComponent(query)}`,google:`https://www.google.com/search?q=${encodeURIComponent(query)}`,yandex:`https://www.yandex.com/search/touch/?text=${encodeURIComponent(query)}`,bita:`https://metaso.cn/?q=${encodeURIComponent(query)}`,zhihu:`https://www.zhihu.com/search?type=content&q=${encodeURIComponent(query)}`,imageSearch:`https://quark.sm.cn/s?q=`+encodeURIComponent(query),apkpure:`https://apkpure.com/search?q=${encodeURIComponent(query)}`,backdata:`https://backdata.net/search.html?q=${encodeURIComponent(query)}`};window.open(searchUrls[searchEngine],'_self');resetSearchInput();}
+function resetSearchInput(){const searchInput=document.getElementById('search-input');searchInput.value='';searchInput.blur();setSearchFocus(false);}
+function setSearchFocus(focused){isSearchFocused=focused;sessionStorage.setItem('isSearchFocused',focused);const engineContainer=document.getElementById('engine-container');engineContainer.style.display=focused?'flex':'none';if(focused){document.getElementById('copyright').style.display='none';}else{document.getElementById('copyright').style.display='block';closeSidebar();}}
+function clearSearchInput(){document.getElementById('search-input').value='';document.getElementById('suggestions-box').style.display='none';document.querySelector('.clear-button').style.transform='translateY(-50%)';}
+function loadShortcuts(){const shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[],shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.innerHTML='';if(shortcuts.length===0){const defaultShortcuts=[{title:'个人主页',url:'https://link3.cc/cbkey',image:'img/zy.png'},{title:'Github',url:'https://github.com/',image:'img/github.png'},{title:'AGE动漫',url:'https://m.agedm.org/#/update',image:'img/age.png'},{title:'哔哩哔哩',url:'https://m.bilibili.com/',image:'img/bilibili.png'},{title:'音乐',url:'https://tools.liumingye.cn/music/#/explore/artist',image:'img/my.png'}];localStorage.setItem('shortcuts',JSON.stringify(defaultShortcuts));defaultShortcuts.forEach(shortcut=>createShortcutElement(shortcut));}else{shortcuts.forEach(createShortcutElement);}}
+function createShortcutElement({title,url,image}){const shortcutContainer=document.getElementById('shortcut-container');const newItem=document.createElement('div');newItem.className='grid-item';newItem.setAttribute('draggable','true');newItem.onclick=()=>window.open(url,'_self');newItem.innerHTML=image?`<img src="${image}" alt="${title}" data-url="${url}"><span style="display: ${showShortcutNames?'block':'none'};">${title}</span><div class="drag-handle" onmousedown="event.preventDefault();"></div>`:`<div style="width:40px;height:40px;border-radius:20%;display:flex;align-items:center;justify-content:center;color:#ffffff;box-shadow:0 2px 5px rgba(0,0,0,0.2);margin-bottom:2px;"><span style="font-size:20px;">${title.charAt(0).toUpperCase()}</span></div><span style="display: ${showShortcutNames?'block':'none'};">${title}</span><div class="drag-handle" onmousedown="event.preventDefault();"></div>`;shortcutContainer.appendChild(newItem);newItem.ondragstart=(event)=>{event.dataTransfer.setData('text/plain',JSON.stringify({title,url,image}));};newItem.oncontextmenu=(event)=>{event.preventDefault();showControlPanel(event,title,url);};newItem.ondragover=(event)=>{event.preventDefault();}}
+function showControlPanel(event,title,url){const controlPanel=document.getElementById('control-panel');controlPanel.style.display='block';const updateControlPanelPosition=(event)=>{const shortcutRect=event.target.getBoundingClientRect(),controlPanelWidth=controlPanel.offsetWidth,controlPanelHeight=controlPanel.offsetHeight,shortcutCenterX=shortcutRect.left+shortcutRect.width/2,shortcutCenterY=shortcutRect.top+shortcutRect.height/2,offset=-20;let left,top;if(shortcutCenterY<window.innerHeight/2){if(shortcutCenterX<window.innerWidth/2){left=shortcutRect.right+offset;top=shortcutRect.bottom+offset;}else{left=shortcutRect.left-controlPanelWidth-offset;top=shortcutRect.bottom+offset;}}else{if(shortcutCenterX<window.innerWidth/2){left=shortcutRect.right+offset;top=shortcutRect.top-controlPanelHeight-offset;}else{left=shortcutRect.left-controlPanelWidth-offset;top=shortcutRect.top-controlPanelHeight-offset;}}controlPanel.style.transform=`translate(${left}px,${top}px)`;controlPanel.style.opacity='1';};updateControlPanelPosition(event);const onDragOver=(event)=>{requestAnimationFrame(()=>updateControlPanelPosition(event));};const onDragEnd=()=>{controlPanel.style.opacity='0';controlPanel.style.display='none';shortcutContainer.removeEventListener('dragover',onDragOver);document.removeEventListener('mouseup',onDragEnd);};shortcutContainer.addEventListener('dragover',onDragOver);document.addEventListener('mouseup',onDragEnd);controlPanel.dataset.title=title;controlPanel.dataset.url=url;}
+document.addEventListener('click',()=>{document.getElementById('control-panel').style.display='none';});function editShortcut(){const title=document.getElementById('control-panel').dataset.title,url=document.getElementById('control-panel').dataset.url,shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];currentEditIndex=shortcuts.findIndex(item=>item.title===title);document.getElementById('icon-title').value=title;document.getElementById('icon-url').value=url;document.getElementById('icon-image').value=shortcuts[currentEditIndex].image;isEditing=true;openAddDialog();}
+function deleteShortcut(){const title=document.getElementById('control-panel').dataset.title,shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];localStorage.setItem('shortcuts',JSON.stringify(shortcuts.filter(item=>item.title!==title)));loadShortcuts();document.getElementById('control-panel').style.display='none';}
+const shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.addEventListener('dragover',(event)=>{event.preventDefault();});shortcutContainer.addEventListener('drop',(event)=>{event.preventDefault();const draggedData=event.dataTransfer.getData('text/plain'),{title,url,image}=JSON.parse(draggedData),draggedElement=[...document.querySelectorAll('.grid-item')].find(item=>item.querySelector('span').textContent===title),targetElement=event.target.closest('.grid-item');if(targetElement&&draggedElement!==targetElement){const container=document.getElementById('shortcut-container'),draggedIndex=[...container.children].indexOf(draggedElement),targetIndex=[...container.children].indexOf(targetElement);if(draggedIndex<targetIndex){container.insertBefore(draggedElement,targetElement.nextSibling);}else{container.insertBefore(draggedElement,targetElement);}saveShortcutsOrder();document.getElementById('control-panel').style.display='none';}});function saveShortcutsOrder(){const shortcuts=[...document.querySelectorAll('.grid-item')].map(item=>{const title=item.querySelector('span').textContent,url=item.querySelector('img').dataset.url,image=item.querySelector('img').src;return{title,url,image};});localStorage.setItem('shortcuts',JSON.stringify(shortcuts));}
+function openAddDialog(){document.getElementById('add-dialog').style.display='block';}
+function closeAddDialog(){document.getElementById('add-dialog').style.display='none';showSearch();}
+function addShortcut(){const title=document.getElementById('icon-title').value;const url=document.getElementById('icon-url').value;const image=document.getElementById('icon-image').value;if(!title||!url){alert('请填写所有字段！');return;}if(!image){const faviconUrl=getFaviconUrl(url);document.getElementById('icon-image').value=faviconUrl;}if(isEditing){const shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];shortcuts[currentEditIndex]={title,url,image};localStorage.setItem('shortcuts',JSON.stringify(shortcuts));loadShortcuts();isEditing=false;}else{saveShortcut(title,url,image);}closeAddDialog();clearInputFields();}
+function saveShortcut(title,url,image){const shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];shortcuts.push({title,url,image});localStorage.setItem('shortcuts',JSON.stringify(shortcuts));createShortcutElement({title,url,image});}
+function clearInputFields(){document.getElementById('icon-title').value='';document.getElementById('icon-url').value='';document.getElementById('icon-image').value='';}
+function chooseImage(){const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=event=>{const file=event.target.files[0],reader=new FileReader();reader.onload=e=>{document.getElementById('icon-image').value=e.target.result;};reader.readAsDataURL(file);};input.click();}
+function openBackgroundDialog(){document.getElementById('background-dialog').style.display='block';}
+function closeBackgroundDialog(){document.getElementById('background-dialog').style.display='none';showSearch();}
+function setBackground(){const url=document.getElementById('background-url').value;if(url){backgroundContainer.style.backgroundImage=`url('${url}')`;localStorage.setItem('userBackground',url);closeBackgroundDialog();updateTextColorBasedOnBackground();}else{alert('请填写背景图片链接！');}}
+function chooseBackgroundImage(){const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=event=>{const file=event.target.files[0],reader=new FileReader();reader.onload=e=>{document.getElementById('background-url').value=e.target.result;setBackground();};reader.readAsDataURL(file);};input.click();}
+function openExportImportDialog(){document.getElementById('export-import-dialog').style.display='block';}
+function exportData(){const shortcuts=localStorage.getItem('shortcuts'),userBackground=localStorage.getItem('userBackground'),dataToExport={shortcuts:shortcuts?JSON.parse(shortcuts):[],userBackground:userBackground||''},blob=new Blob([JSON.stringify(dataToExport)],{type:'application/json'});saveAs(blob,'data.json');}
+function importData(){const input=document.createElement('input');input.type='file';input.accept='.json';input.onchange=event=>{const file=event.target.files[0],reader=new FileReader();reader.onload=function(e){const data=JSON.parse(e.target.result);if(data.shortcuts){const existingShortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];data.shortcuts.forEach(shortcut=>{if(!existingShortcuts.some(existingShortcut=>existingShortcut.title===shortcut.title)){existingShortcuts.push(shortcut);}});localStorage.setItem('shortcuts',JSON.stringify(existingShortcuts));loadShortcuts();}if(data.userBackground){localStorage.setItem('userBackground',data.userBackground);backgroundContainer.style.backgroundImage=`url('${data.userBackground}')`;updateTextColorBasedOnBackground();}closeExportImportDialog();};reader.readAsText(file);};input.click();}
+function closeExportImportDialog(){document.getElementById('export-import-dialog').style.display='none';showSearch();}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');}
+function toggleShortcutNames(){showShortcutNames=!showShortcutNames;localStorage.setItem('showShortcutNames',showShortcutNames);const shortcutItems=document.querySelectorAll('.grid-item span');shortcutItems.forEach(item=>{item.style.display=showShortcutNames?'block':'none';});}
+function updateTextColorBasedOnBackground(){const backgroundImageUrl=localStorage.getItem('userBackground');if(backgroundImageUrl){const img=new Image();img.src=backgroundImageUrl;img.crossOrigin='Anonymous';img.onload=()=>{const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=img.width;canvas.height=img.height;ctx.drawImage(img,0,0);const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),data=imageData.data;let r=0,g=0,b=0,pixelCount=data.length/4;for(let i=0;i<pixelCount;i++){r+=data[i*4];g+=data[i*4+1];b+=data[i*4+2];}r=Math.floor(r/pixelCount);g=Math.floor(g/pixelCount);b=Math.floor(b/pixelCount);const brightness=(r*299+g*587+b*114)/1000,textColor=brightness>128?'#000':'#FFF';document.querySelectorAll('.grid-item span').forEach(item=>{item.style.color=textColor;});const sidebarButtons=document.querySelectorAll('#sidebar img,.toggle-button');sidebarButtons.forEach(button=>{button.style.filter=brightness>128?'invert(1)':'invert(0)';});const mdiLeaf=document.querySelector('img[alt="切换快捷访问"]');const cdIcon=document.querySelector('img[alt="唤醒侧边栏"]');if(mdiLeaf){mdiLeaf.style.filter=brightness>128?'invert(1)':'invert(0)';}if(cdIcon){cdIcon.style.filter=brightness>128?'invert(1)':'invert(0)';};};}}
+function openBlurDialog(){document.getElementById('blur-dialog').style.display='block';}
+function closeBlurDialog(){document.getElementById('blur-dialog').style.display='none';showSearch();}
+function updateBlurValue(value){mask.style.backdropFilter=`blur(${value}px)`;}
+function updateMaskValue(value){mask.style.backgroundColor=`rgba(0,0,0,${value/100})`;}
+function setBlur(){const blurValue=document.getElementById('blur-range').value,maskValue=document.getElementById('mask-range').value;mask.style.backdropFilter=`blur(${blurValue}px)`;mask.style.backgroundColor=`rgba(0,0,0,${maskValue/100})`;localStorage.setItem('blurValue',blurValue);localStorage.setItem('maskValue',maskValue);closeBlurDialog();}
+function getFaviconUrl(url){const link=new URL(url);return`${link.protocol}//${link.hostname}/favicon.ico`;}
+function fetchFavicon(url){const faviconUrl=getFaviconUrl(url);document.getElementById('icon-image').value=faviconUrl;}
+function toggleShortcutVisibility(){const shortcutContainer=document.getElementById('shortcut-container');shortcutsVisible=!shortcutsVisible;shortcutContainer.style.display=shortcutsVisible?'grid':'none';localStorage.setItem('shortcutsVisible',shortcutsVisible);}let shortcutsVisible=true;window.onclick=function(event){const sidebar=document.getElementById('sidebar'),toggleButton=document.querySelector('.toggle-button');if(!sidebar.contains(event.target)&&!toggleButton.contains(event.target)){closeSidebar();}const controlPanel=document.getElementById('control-panel');if(!controlPanel.contains(event.target)){controlPanel.style.display='none';}};
+function hideSearch(){document.querySelector('.search-container').style.display='none';}
+function showSearch(){document.querySelector('.search-container').style.display='block';}
 </script>
-<div id="copyright" style="position:fixed;bottom:1px;left:50%;transform:translateX(-50%);font-size:5px;color:rgba(255,255,255,0.7);white-space:nowrap;z-index:500;">版权归属：MT论坛@练习时长两年半的水怪</div>
 </body>
 </html>
