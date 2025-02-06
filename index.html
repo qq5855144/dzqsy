@@ -4,101 +4,447 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>主页</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="img/FileSaver.min.js"></script>
 <style>
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;margin:0;padding:0;height:100vh;overflow:hidden;position:relative;}
-.background-container{background-image:url('img/icon1.png');background-size:cover;background-position:center;position:absolute;top:0;left:0;right:0;bottom:0;z-index:1;}
-.mask{position:absolute;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0);z-index:2;backdrop-filter:blur(0px);}
-.search-container{position:fixed;bottom:33px;left:50%;transform:translateX(-50%);width:80%;max-width:500px;z-index:1000;}
-.search-input-wrapper{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;}
-.search-input-style{width:100%;height:40px;padding:10px;border:1px solid #ccc;border-radius:15px;box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;outline:none;box-sizing:border-box;background-color:rgba(240,240,244,0.9);color:#2c2c2c;backdrop-filter:blur(5px);transition:width 0.3s;}
-.search-input-style:focus{width:120%;}
-.clear-button{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;cursor:pointer;transition:transform 0.3s;}
-.search-input-style:focus+.clear-button{transform:translateY(-50%) translateX(30px);}
-@media (orientation:landscape){.search-input-style:focus+.clear-button{transform:translateY(-50%) translateX(52px);}}
-.suggestions{border:1px solid #ccc;border-radius:18px;max-height:200px;overflow-y:auto;width:119.2%;display:none;background:rgba(240,240,244,0.9);position:absolute;z-index:1000;bottom:40.5px;left:-10%;box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;backdrop-filter:blur(5px);transform:translateX(0);}
-.suggestion-item{padding:10px;cursor:pointer;transition:background-color 0.3s;display:flex;align-items:center;}
-.suggestion-item:hover{background-color:rgba(241,241,241,0.8);}
-.suggestion-icon{width:20px;height:20px;cursor:pointer;margin:0 5px;vertical-align:middle;}
-.engine-container{display:none;position:fixed;bottom:2px;left:2%;width:96%;height:30px;overflow:hidden;justify-content:center;z-index:1000;background-color:transparent;margin-top:1px;}
-.engine-display{display:flex;overflow-x:auto;white-space:nowrap;height:100%;gap:0px;}
-.engine-button {
-    width: 55.5px;
-    height: 30px;
+/* 设置全局字体和页面基本样式 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
     padding: 0;
-    border: 1px solid #ccc;
-    border-radius: 7px;
-    background-color: rgba(240, 240, 244, 0.9);
-    color: transparent;
-    font-size: 14px;
-    cursor: pointer;
-    margin: 0 1px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    backdrop-filter: blur(5px);
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1), /* Adjusted shadow */
-                0px 0px 0px rgba(255, 255, 255, 0.5), /* Adjusted shadow */
-                6px 6px 10px rgba(0, 0, 0, 0.1) inset, /* Adjusted inset shadow */
-                -6px -6px 10px rgba(255, 255, 255, 0.5) inset; /* Adjusted inset shadow */
-    transition: border-color 0.3s, box-shadow 0.3s;
-    flex-shrink: 0;
+     width: 360px;  /* 页面宽度 */
+    height: 100vh; /* 页面高度 */
+    background-color: transparent;
 }
 
-.engine-button:focus{outline:none;border-color:#ffb61e;}
-.engine-button.selected{border:1px solid #ffb61e;color:transparent;}
-.grid-container{display:grid;grid-template-columns:repeat(auto-fit,66px);grid-template-rows:repeat(auto-fill,68px);gap:0;margin:10px 0;max-width:100%;max-height:479px;position:fixed;top:50px;left:15px;z-index:500;overflow-y:auto;overflow-x:hidden;}
-@media (orientation:portrait){.grid-container{max-width:calc(100% - 30px);left:15px;right:15px;}}
-@media (orientation:landscape){.grid-container{max-width:calc(100% - 74px);left:37px;right:37px;}}
-.grid-item{display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;width:66px;height:68px;}
-.grid-item img{width:42px;height:42px;border-radius:20%;background-color: rgba(255, 255, 255, 0.9);box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;margin-bottom:4px;cursor:pointer;}
-.grid-item span{font-size:10px;text-align:center;color:#ffffff;white-space:nowrap;overflow:hidden;width:66px;cursor:pointer;}
-.drag-handle{width:100%;height:100%;position:absolute;top:0;left:0;cursor:move;z-index:1;}
-.dialog{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(240,240,244,0.9);border-radius:20px;box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;padding:20px;z-index:2000;width:300px;border:1px solid #ccc;box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;box-sizing:border-box;backdrop-filter:blur(5px);}
-.dialog h3{margin:0 0 15px;text-align:center;color:#2c2c2c;}
-.dialog input[type="text"]{margin-bottom:10px;padding:10px 15px;border:1px solid #ccc;box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;border-radius:10px;background-color:rgba(240,240,244,0.5);color:#2c2c2c;font-size:14px;box-sizing:border-box;transition:background-color 0.3s,transform 0.2s;backdrop-filter:blur(5px);}
-.dialog input[type="text"].dialog-input:focus{outline:none;width:100%;}
-.dialog button{flex:1;margin:0 5px;padding:10px 15px;border:1px solid #ccc;box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;border-radius:10px;background-color:rgba(240,240,244,0.5);color:#2c2c2c;font-size:14px;cursor:pointer;transition:background-color 0.3s,transform 0.2s;}
-.dialog button:hover{background-color:rgba(240,240,244,0.5);transform:translateY(-1px);}
-.dialog button:active{transform:translateY(1px);}
-.control-panel{display:none;position:absolute;top:0;left:0;background-color:rgba(240,240,244,0.9);border-radius:10px;box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;z-index:1000;padding:10px;transition:transform 0.2s ease,opacity 0.2s ease;opacity:0;}
-.control-button{padding:2px 5px;margin:2px;cursor:pointer;background-color:transparent;color:red;border:none;border-radius:5px;transition:background-color 0.3s;}
-.control-button:hover{background-color:#ff1c1c;}
-.sidebar{position:fixed;top:0;right:-50px;width:50px;height:100vh;background-color:rgba(255,255,255,0.1);backdrop-filter:blur(50px);box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1),
-                0px 0px 0px rgba(255, 255, 255, 0.5), /* Adjusted shadow */
-                6px 6px 10px rgba(0, 0, 0, 0.1) inset, 
-                -6px -6px 10px rgba(255, 255, 255, 0.5) inset;
-                transition:right 0.3s;z-index:2000;}
-.sidebar.open{right:0;}
-.sidebar-content{padding:10px;margin-top:50px;display:flex;flex-direction:column;gap:20px;}
-.toggle-button{position:fixed;top:20px;right:20px;width:20px;height:20px;cursor:pointer;z-index:2001;}
+/* 背景容器，设置背景图像 */
+.background-container {
+    background-image: url('img/icon1.png'); /* 背景图像路径 */
+    background-size: cover; /* 背景图像覆盖整个容器 */
+    background-position: center; /* 背景图像居中 */
+    position: absolute; /* 绝对定位 */
+    top: 0; left: 0; right: 0; bottom: 0; /* 填满整个页面 */
+    z-index: 1; /* z轴顺序 */
+}
+
+/* 遮罩层，透明度设置 */
+.mask {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0); /* 完全透明 */
+    z-index: 2; /* 在背景上方 */
+    backdrop-filter: blur(0px); /* 背景模糊效果 */
+}
+
+/* 搜索框容器 */
+.search-container {
+    position: fixed; /* 固定在页面上 */
+    top: calc(100vh - 390px); /* 距底部390px */
+    width: 360px; /* 占满宽度 */
+    height: 40px; /* 高度 */
+    z-index: 1000; /* 高于其他元素 */
+    transition: top 0.3s; /* 动画效果 */
+}
+
+/* 搜索输入框样式 */
+.search-input-wrapper {
+    position: relative;
+    width: 360px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-input-style {
+    width: 288px; /* 默认宽度 */
+    height: 40px; /* 输入框高度 */
+    padding: 10px; /* 内边距 */
+    border: 1px solid #eee; /* 边框 */
+    border-radius: 15px; /* 圆角 */
+    background: #eee; /* 背景色 */
+    box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff; /* 阴影效果 */
+    outline: none; /* 去掉外边框 */
+    box-sizing: border-box; /* 包含内边距和边框 */
+    transition: width 0.3s; /* 动画效果 */
+    color: #2c2c2c; /* 字体颜色 */
+}
+
+/* 输入框聚焦时的样式 */
+.search-input-style:focus {
+    width: 345.6px; /* 聚焦时宽度增加 */
+}
+
+/* 搜索容器聚焦时的样式 */
+.search-container:focus-within {
+    top: calc(100vh - 73px); /* 移动到页面底部 */
+}
+
+/* 清除按钮样式 */
+.clear-button {
+    position: absolute; /* 绝对定位 */
+    right: 42px; /* 右侧距离10px */
+    top: 50%; /* 垂直居中 */
+    transform: translateY(-50%); /* 垂直居中 */
+    width: 15px; /* 按钮宽度 */
+    height: 15px; /* 按钮高度 */
+    cursor: pointer; /* 鼠标指针样式 */
+    transition: transform 0.3s; /* 动画效果 */
+}
+
+.search-input-style:focus+.clear-button{transform:translateY(-50%) translateX(30px);}
+@media (orientation:landscape){.search-input-style:focus+.clear-button{transform:translateY(-50%) translateX(52px);}}
+
+
+
+/* 建议列表样式 */
+.suggestions {  
+    max-height: 350px; /* 最大高度 */
+    overflow-y: auto; /* 超出部分滚动 */
+    width: 345.6px; /* 宽度 (96% of 360px) */
+    display: none; /* 默认隐藏 */
+    background: transparent; /* 背景色 */
+    position: absolute; /* 绝对定位 */
+    z-index: 1000; /* 高于其他元素 */
+    bottom: 43px; /* 距底部距离 */
+    left: 7.2px; /* 距左侧距离 (2% of 360px) */
+    backdrop-filter: blur(5px); /* 背景模糊效果 */
+    transform: translateX(0); /* 初始位置 */
+}
+
+/* 建议项样式 */
+.suggestion-item {
+    padding: 10px; /* 内边距 */
+    cursor: pointer; /* 鼠标指针样式 */
+    transition: background-color 0.3s; /* 动画效果 */
+    display: flex; /* 使用flex布局 */
+    align-items: center; /* 垂直居中 */
+}
+
+/* 建议项悬停时的样式 */
+.suggestion-item:hover {
+    background-color: rgba(241, 241, 241, 0.8); /* 悬停时背景色 */
+}
+
+/* 建议项图标样式 */
+.suggestion-icon {
+    width: 20px; /* 图标宽度 */
+    height: 20px; /* 图标高度 */
+    cursor: pointer; /* 鼠标指针样式 */
+    margin: 0 5px; /* 左右间距 */
+    vertical-align: middle; /* 垂直对齐 */
+}
+
+/* 引擎容器样式 */
+.engine-container {
+    display: none; /* 默认隐藏 */
+    position: fixed; /* 固定定位 */
+    top: calc(100vh - 32px); /* 距底部32px */
+    left: 7.2px; /* 距左侧距离 (2% of 360px) */
+    width: 345.6px; /* 宽度 (96% of 360px) */
+    height: 32px; /* 高度 */
+    background: #eee; /* 背景色 */
+    overflow: hidden; /* 超出部分隐藏 */
+    justify-content: center; /* 居中对齐 */
+    z-index: 1000; /* 高于其他元素 */   
+    margin-top: 1px; /* 上边距 */
+    margin-bottom: 1px; /* 下边距 */
+}
+
+/* 引擎显示样式 */
+.engine-display {
+    display: flex; /* 使用flex布局 */
+    overflow-x: auto; /* 横向滚动 */
+    white-space: nowrap; /* 不换行 */
+    height: 100%; /* 高度 */
+    gap: 0px; /* 间距 */
+}
+
+/* 引擎按钮样式 */
+.engine-button {
+    width: 55.5px; /* 按钮宽度 */
+    height: 30px; /* 按钮高度 */
+    padding: 0; /* 内边距 */
+    border: 1px solid #eee; /* 边框 */
+    border-radius: 7px; /* 圆角 */        
+    background: #eee; /* 背景色 */     
+    font-size: 14px; /* 字体大小 */
+    cursor: pointer; /* 鼠标指针样式 */
+    margin: 0 1px; /* 左右边距 */
+    background-size: contain; /* 背景图像包含 */
+    background-repeat: no-repeat; /* 背景图像不重复 */
+    background-position: center; /* 背景图像居中 */
+    backdrop-filter: blur(5px); /* 背景模糊效果 */
+    transition: border-color 0.3s, box-shadow 0.3s; /* 动画效果 */
+    flex-shrink: 0; /* 不缩小 */
+}
+
+/* 引擎按钮聚焦时的样式 */
+.engine-button:focus {
+    outline: none; /* 去掉外边框 */
+    border-color: #ffb61e; /* 边框颜色 */
+}
+
+/* 选中的引擎按钮样式 */
+.engine-button.selected {
+    border: 1px solid #ffb61e; /* 边框颜色 */
+    color: transparent; /* 字体颜色透明 */
+}
+
+/* 网格容器样式 */
+.grid-container {
+    display: grid; /* 使用网格布局 */
+    grid-template-columns: repeat(auto-fit, 66px); /* 自动适应列 */
+    grid-template-rows: repeat(auto-fill, 68px); /* 自动适应行 */
+    gap: 0; /* 网格间距 */
+    margin: 10px 0; /* 上下边距 */
+    max-width: 330px; /* 最大宽度 */
+    max-height: 268px; /* 最大高度 */
+    overflow-y: auto; /* 超出部分滚动 */
+    position: fixed; /* 固定定位 */
+    top: calc(100vh - 320px); /* 距底部320px */
+    bottom: 0; /* 填满底部 */
+    left: 15px; /* 距左侧距离 */
+    z-index: 500; /* z轴顺序 */
+}
+
+/* 网格项样式 */
+.grid-item {
+    display: flex; /* 使用flex布局 */
+    flex-direction: column; /* 纵向排列 */
+    align-items: center; /* 水平居中 */
+    justify-content: center; /* 垂直居中 */
+    cursor: pointer; /* 鼠标指针样式 */
+    position: relative; /* 相对定位 */
+    width: 66px; /* 宽度 */
+    height: 68px; /* 高度 */
+}
+
+/* 网格项中的图像样式 */
+.grid-item img {
+    width: 42px; /* 图像宽度 */
+    height: 42px; /* 图像高度 */
+    border-radius: 20%; /* 圆角 */
+    background: #eee; /* 背景色 */
+    box-shadow: 5px 5px 9px #c3c3c3, -5px -5px 9px #ffffff; /* 阴影效果 */
+    margin-bottom: 6px; /* 下边距 */
+    cursor: pointer; /* 鼠标指针样式 */
+    padding: 10px; /* 内边距 */
+    box-sizing: border-box; /* 包含内边距和边框 */
+}
+
+/* 网格项中的文本样式 */
+.grid-item span {
+    font-size: 10px; /* 字体大小 */
+    text-align: center; /* 文本居中 */
+    color: #000; /* 字体颜色 */
+    white-space: nowrap; /* 不换行 */
+    overflow: hidden; /* 超出部分隐藏 */
+    width: 66px; /* 宽度 */
+    cursor: pointer; /* 鼠标指针样式 */
+}
+
+/* 拖动手柄样式 */
+.drag-handle {
+    width: 100%; /* 宽度 */
+    height: 100%; /* 高度 */
+    position: absolute; /* 绝对定位 */
+    top: 0; left: 0; /* 填满父元素 */
+    cursor: move; /* 拖动指针样式 */
+    z-index: 1; /* z轴顺序 */
+}
+
+/* 对话框样式 */
+.dialog {
+    display: none; /* 默认隐藏 */
+    position: fixed; /* 固定定位 */
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 精确定位 */   
+    border-radius: 20px; /* 圆角 */
+    background: #eee; /* 背景色 */
+    box-shadow: 5px 5px 9px #c3c3c3, -5px -5px 9px #ffffff; /* 阴影效果 */
+    padding: 20px; /* 内边距 */
+    z-index: 2000; /* 高于其他元素 */
+    width: 300px; /* 宽度 */
+    border: 1px solid #eee; /* 边框 */
+    box-sizing: border-box; /* 包含内边距和边框 */
+    backdrop-filter: blur(5px); /* 背景模糊效果 */
+}
+
+/* 对话框标题样式 */
+.dialog h3 {
+    margin: 0 0 15px; /* 上边距和下边距 */
+    text-align: center; /* 文本居中 */
+    color: #2c2c2c; /* 字体颜色 */
+}
+
+/* 对话框输入框样式 */
+.dialog input[type="text"] {
+    margin-bottom: 10px; /* 下边距 */
+    width: 100%; /* 宽度 */
+    padding: 10px 15px; /* 内边距 */
+    border: 1px solid #eee; /* 边框 */
+    box-shadow: 5px 5px 9px #c3c3c3, -5px -5px 9px #ffffff; /* 阴影效果 */
+    border-radius: 10px; /* 圆角 */
+    background-color: rgba(240, 240, 244, 0.5); /* 背景透明色 */
+    color: #2c2c2c; /* 字体颜色 */
+    font-size: 14px; /* 字体大小 */
+    box-sizing: border-box; /* 包含内边距和边框 */
+    transition: background-color 0.3s, transform 0.2s; /* 动画效果 */
+    backdrop-filter: blur(5px); /* 背景模糊效果 */
+}
+
+/* 对话框输入框聚焦时的样式 */
+.dialog input[type="text"].dialog-input:focus {
+    outline: none; /* 去掉外边框 */
+    width: 100%; /* 宽度 */
+}
+
+/* 对话框按钮样式 */
+.dialog button {
+    flex: 1; /* 等比缩放 */
+    margin: 0 5px; /* 左右边距 */
+    padding: 10px 15px; /* 内边距 */
+    border: 1px solid #eee; /* 边框 */
+    box-shadow: 5px 5px 9px #c3c3c3, -5px -5px 9px #ffffff; /* 阴影效果 */
+    border-radius: 10px; /* 圆角 */
+    background-color: rgba(240, 240, 244, 0.5); /* 背景透明色 */
+    color: #2c2c2c; /* 字体颜色 */
+    font-size: 14px; /* 字体大小 */
+    cursor: pointer; /* 鼠标指针样式 */
+    transition: background-color 0.3s, transform 0.2s; /* 动画效果 */
+}
+
+/* 对话框按钮悬停时的样式 */
+.dialog button:hover {
+    background-color: rgba(240, 240, 244, 0.5); /* 悬停时背景色 */
+    transform: translateY(-1px); /* 向上移动 */
+}
+
+/* 对话框按钮点击时的样式 */
+.dialog button:active {
+    transform: translateY(1px); /* 向下移动 */
+}
+
+/* 控制面板样式 */
+.control-panel {
+    display: none; /* 默认隐藏 */
+    position: absolute; /* 绝对定位 */
+    top: 0; left: 0; /* 填满父元素 */
+    background-color: rgba(240, 240, 244, 0.9); /* 背景透明色 */
+    border-radius: 10px; /* 圆角 */
+    box-shadow: 5px 5px 9px #cccccc, -5px -5px 9px #ffffff; /* 阴影效果 */
+    z-index: 1000; /* 高于其他元素 */
+    padding: 8px; /* 内边距 */
+    transition: transform 0.2s ease, opacity 0.2s ease; /* 动画效果 */
+    opacity: 0; /* 初始透明度 */
+}
+
+/* 控制按钮样式 */
+.control-button {
+    padding: 1px 5px; /* 内边距 */
+    margin: 2px; /* 边距 */
+    cursor: pointer; /* 鼠标指针样式 */
+    background-color: transparent; /* 背景透明 */
+    color: red; /* 字体颜色 */
+    border: none; /* 无边框 */
+    border-radius: 5px; /* 圆角 */
+    transition: background-color 0.3s; /* 动画效果 */
+}
+
+/* 控制按钮悬停时的样式 */
+.control-button:hover {
+    background-color: #ff1c1c; /* 悬停时背景色 */
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    position: fixed; /* 固定定位 */
+    top: 0; right: -50px; /* 初始位置在右侧 */
+    width: 50px; /* 宽度 */
+    height: 100vh; /* 高度 */
+    background-color: rgba(255, 255, 255, 0); /* 完全透明 */
+    backdrop-filter: blur(0px); /* 背景模糊效果 */
+    transition: right 0.3s; /* 动画效果 */
+    z-index: 998; /* z轴顺序 */
+}
+
+/* 侧边栏打开时的样式 */
+.sidebar.open {
+    right: 0; /* 移动到可视区域 */
+}
+
+/* 侧边栏内容样式 */
+.sidebar-content {
+    padding: 10px; /* 内边距 */
+    margin-top: 20px; /* 上边距 */
+    display: flex; /* 使用flex布局 */
+    flex-direction: column; /* 纵向排列 */
+    gap: 20px; /* 间距 */
+}
+
+/* 具备神经形态文本样式 */
+.neumorphic-text {
+    display: table; /* 表格布局 */
+    height: 128px; /* 高度 */
+    width: 360px; /* 占满宽度 */
+    background-position: center; /* 背景居中 */
+    background-size: cover; /* 背景覆盖 */
+    font-size: 90px; /* 字体大小 */
+    font-weight: bold; /* 粗体 */
+    color: #eab308; /* 字体颜色 */
+    text-shadow: 5px 5px 9px #cccccc, -5px -5px 9px #ffffff; /* 文本阴影 */
+    text-align: center; /* 文本居中 */
+    position: fixed; /* 固定定位 */
+    top: calc(100vh - 555px); /* 距底部555px */
+    z-index: 3; /* z轴顺序 */
+}
+
+/* 具备神经形态文本内部样式 */
+.neumorphic-text span {
+    display: table-cell; /* 表格单元格布局 */
+    vertical-align: middle; /* 垂直居中 */
+}
+/* 日间模式样式 */
+body {
+    background-color: transparent; /* 页面背景色 */
+}
+
+.background-container {
+    background-size: cover;
+    background-position: center;
+    background: #f5f5f5; /* 白天模式背景样式 */
+    box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff; /* 白天模式阴影效果 */
+}
+
+/* 夜间模式样式 */
+.night-mode {
+    background-color: #333333; /* 页面背景色 */
+}
+
+.night-mode .search-input-style,
+.night-mode .dialog,
+.night-mode .background-container,
+.night-mode .dialog input[type="text"],
+.night-mode .dialog button,
+.night-mode .control-panel,
+.night-mode .grid-item img {
+    background: linear-gradient(145deg, #2e2e2e, #373737);
+box-shadow:  6px 6px 9px #232323,
+             -6px -6px 9px #434343;
+}
+
+.night-mode .neumorphic-text {
+    color: #eab308; /* 字体颜色可以根据需要调整 */
+    text-shadow: 5px 5px 10px rgba(255, 255, 255, 0.2), -5px -5px 10px rgba(0, 0, 0, 0.5); /* 修改文本阴影颜色 */
+}
 </style>
 </head>
 <body>
+<div class="neumorphic-text" onclick="toggleSidebar()">
+    <span>VIA</span>
+</div>
+
 <div class="background-container" id="background-container"></div>
 <div class="mask" id="mask"></div>
 <div class="search-container">
@@ -163,10 +509,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 <div class="sidebar" id="sidebar">
 <div class="sidebar-content">
 <img src="img/tj.svg" alt="添加快捷方式" onclick="openAddDialog();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
-<img src="img/bj.svg" alt="设置背景" onclick="openBackgroundDialog();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 <img src="img/dc.svg" alt="导入导出" onclick="openExportImportDialog();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 <img src="img/txt.svg" alt="隐藏名称" onclick="toggleShortcutNames();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
-<img src="img/mf.svg" alt="调整模糊" onclick="openBlurDialog();closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 <img src="img/you.svg" alt="进入 you.html" onclick="window.location.href='img/you.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 <img src="img/mm.svg" alt="进入 mm.html" onclick="window.location.href='img/mm.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 <img src="img/gsmf.svg" alt="进入 gsmf.html" onclick="window.location.href='img/gsmf.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
@@ -176,10 +520,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 <button class="control-button" id="edit-button" onclick="editShortcut()">编辑</button>
 <button class="control-button" id="delete-button" onclick="deleteShortcut()">删除</button>
 </div>
-<img src="img/MdiLeaf.svg" alt="切换快捷访问" style="position:fixed; top:15px; left:20px; cursor:pointer; z-index:2001; width:25px; height:25px;" onclick="toggleShortcutVisibility()">
-<img src="img/cd.svg" alt="唤醒侧边栏" style="position:fixed; top:20px; right:20px; cursor:pointer; z-index:2002; width:20px; height:20px;" onclick="toggleSidebar()">
 <script>
-let searchEngine='bing',deleteMode=false,showShortcutNames=localStorage.getItem('showShortcutNames')!=='false',storedBackground=localStorage.getItem('userBackground'),backgroundContainer=document.getElementById('background-container'),mask=document.getElementById('mask'),storedBlurValue=localStorage.getItem('blurValue')||0,storedMaskValue=localStorage.getItem('maskValue')||0;mask.style.backdropFilter=`blur(${storedBlurValue}px)`;mask.style.backgroundColor=`rgba(0,0,0,${storedMaskValue/100})`;if(storedBackground){backgroundContainer.style.backgroundImage=`url('${storedBackground}')`; }let isSearchFocused=false,searchQuery=sessionStorage.getItem('searchQuery')||'';document.getElementById('search-input').value=searchQuery;let isEditing=false,currentEditIndex=-1;window.onload=function(){loadShortcuts();updateTextColorBasedOnBackground();const storedVisibility=localStorage.getItem('shortcutsVisible');if(storedVisibility!==null){shortcutsVisible=storedVisibility==='true';}const shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.style.display=shortcutsVisible?'grid':'none';};class SearchHint{constructor(){this.searchInput=document.getElementById('search-input');this.suggestionsBox=document.getElementById('suggestions-box');this.init();}
+let searchEngine='bing',deleteMode=false,showShortcutNames=localStorage.getItem('showShortcutNames')!=='false',storedBackground=localStorage.getItem('userBackground'),backgroundContainer=document.getElementById('background-container'),mask=document.getElementById('mask'),storedBlurValue=localStorage.getItem('blurValue')||0,storedMaskValue=localStorage.getItem('maskValue')||0;mask.style.backdropFilter=`blur(${storedBlurValue}px)`;mask.style.backgroundColor=`rgba(0,0,0,${storedMaskValue/100})`;if(storedBackground){backgroundContainer.style.backgroundImage=`url('${storedBackground}')`; }let isSearchFocused=false,searchQuery=sessionStorage.getItem('searchQuery')||'';document.getElementById('search-input').value=searchQuery;let isEditing=false,currentEditIndex=-1;window.onload=function(){loadShortcuts();updateTextColorBasedOnBackground();const storedVisibility=localStorage.getItem('shortcutsVisible');if(storedVisibility!==null){shortcutsVisible=storedVisibility==='true';}const shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.style.display=shortcutsVisible?'grid':'none';};
+class SearchHint{constructor(){this.searchInput=document.getElementById('search-input');this.suggestionsBox=document.getElementById('suggestions-box');this.init();}
 init(){this.watchInput();this.searchInput.onblur=()=>{setTimeout(()=>{this.suggestionsBox.style.display='none';},200);setSearchFocus(false);};}
 watchInput(){this.searchInput.onkeyup=()=>{if(this.searchInput.value.length===0){this.clearSuggestions();return;}this.fetchSuggestions();};this.searchInput.onfocus=()=>{setSearchFocus(true);if(this.searchInput.value.length>0){this.suggestionsBox.style.display='block';}};}
 fetchSuggestions(){const script=document.createElement('script');script.src=`https://www.baidu.com/su?wd=${encodeURIComponent(this.searchInput.value)}&cb=showSuggestions`;document.body.appendChild(script);document.body.removeChild(script);}
@@ -189,15 +532,51 @@ function showSuggestions(msg){new SearchHint().showMsg(msg);}
 function performSearchWithSuggestion(suggestion){const searchInput=document.getElementById('search-input');searchInput.value=suggestion;performSearch();}
 function replaceSearchInput(suggestion,event){event.preventDefault();const searchInput=document.getElementById('search-input');searchInput.value=suggestion;new SearchHint().fetchSuggestions();}
 function setSearchEngine(engine,button){searchEngine=engine;document.querySelectorAll('.engine-button').forEach(btn=>btn.classList.remove('selected'));button.classList.add('selected');const query=document.getElementById('search-input').value;if(query){performSearch();}}
-function performSearch(){const query=document.getElementById('search-input').value;sessionStorage.setItem('searchQuery',query);if(!query)return;const urlPattern=/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;if(urlPattern.test(query)){window.open(query.startsWith('http')?query:'http://'+query,'_self');resetSearchInput();return;}const searchUrls={bing:`https://www.bing.com/search?q=${encodeURIComponent(query)}`,baidu:`https://www.baidu.com/s?wd=${encodeURIComponent(query)}`,google:`https://www.google.com/search?q=${encodeURIComponent(query)}`,yandex:`https://www.yandex.com/search/touch/?text=${encodeURIComponent(query)}`,bita:`https://metaso.cn/?q=${encodeURIComponent(query)}`,zhihu:`https://www.zhihu.com/search?type=content&q=${encodeURIComponent(query)}`,imageSearch:`https://quark.sm.cn/s?q=`+encodeURIComponent(query),apkpure:`https://apkpure.com/search?q=${encodeURIComponent(query)}`,backdata:`https://backdata.net/search.html?q=${encodeURIComponent(query)}`};window.open(searchUrls[searchEngine],'_self');resetSearchInput();}
+function performSearch(){const query=document.getElementById('search-input').value;sessionStorage.setItem('searchQuery',query);if(!query)return;const urlPattern=/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;if(urlPattern.test(query)){window.open(query.startsWith('http')?query:'http://'+query,'_self');resetSearchInput();return;}const searchUrls={bing:`https://cn.bing.com/search?q=${encodeURIComponent(query)}`,baidu:`https://www.baidu.com/s?wd=${encodeURIComponent(query)}`,google:`https://www.google.com/search?q=${encodeURIComponent(query)}`,yandex:`https://www.yandex.com/search/touch/?text=${encodeURIComponent(query)}`,bita:`https://metaso.cn/?q=${encodeURIComponent(query)}`,zhihu:`https://www.zhihu.com/search?type=content&q=${encodeURIComponent(query)}`,imageSearch:`https://quark.sm.cn/s?q=`+encodeURIComponent(query),apkpure:`https://apkpure.com/search?q=${encodeURIComponent(query)}`,backdata:`https://backdata.net/search.html?q=${encodeURIComponent(query)}`};window.open(searchUrls[searchEngine],'_self');resetSearchInput();}
 function resetSearchInput(){const searchInput=document.getElementById('search-input');searchInput.value='';searchInput.blur();setSearchFocus(false);}
-function setSearchFocus(focused){isSearchFocused=focused;sessionStorage.setItem('isSearchFocused',focused);const engineContainer=document.getElementById('engine-container');engineContainer.style.display=focused?'flex':'none';if(focused){document.getElementById('copyright').style.display='none';}else{document.getElementById('copyright').style.display='block';closeSidebar();}}
-function clearSearchInput(){document.getElementById('search-input').value='';document.getElementById('suggestions-box').style.display='none';document.querySelector('.clear-button').style.transform='translateY(-50%)';}
-function loadShortcuts(){const shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[],shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.innerHTML='';if(shortcuts.length===0){const defaultShortcuts=[{title:'个人主页',url:'https://link3.cc/cbkey',image:'img/zy.png'},{title:'Github',url:'https://github.com/',image:'img/github.png'},{title:'AGE动漫',url:'https://m.agedm.org/#/update',image:'img/age.png'},{title:'哔哩哔哩',url:'https://m.bilibili.com/',image:'img/bilibili.png'},{title:'音乐',url:'https://tools.liumingye.cn/music/#/explore/artist',image:'img/my.png'}];localStorage.setItem('shortcuts',JSON.stringify(defaultShortcuts));defaultShortcuts.forEach(shortcut=>createShortcutElement(shortcut));}else{shortcuts.forEach(createShortcutElement);}}
-function createShortcutElement({title,url,image}){const shortcutContainer=document.getElementById('shortcut-container');const newItem=document.createElement('div');newItem.className='grid-item';newItem.setAttribute('draggable','true');newItem.onclick=()=>window.open(url,'_self');newItem.innerHTML=image?`<img src="${image}" alt="${title}" data-url="${url}"><span style="display: ${showShortcutNames?'block':'none'};">${title}</span><div class="drag-handle" onmousedown="event.preventDefault();"></div>`:`<div style="width:40px;height:40px;border-radius:20%;display:flex;align-items:center;justify-content:center;color:#ffffff;box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2),
-                        0px 0px 0px rgba(255, 255, 255, 1),
-                        12px 12px 20px rgba(0, 0, 0, 0.2) inset,
-                        -12px -12px 20px rgba(255, 255, 255, 1) inset;margin-bottom:2px;"><span style="font-size:20px;">${title.charAt(0).toUpperCase()}</span></div><span style="display: ${showShortcutNames?'block':'none'};">${title}</span><div class="drag-handle" onmousedown="event.preventDefault();"></div>`;shortcutContainer.appendChild(newItem);newItem.ondragstart=(event)=>{event.dataTransfer.setData('text/plain',JSON.stringify({title,url,image}));};newItem.oncontextmenu=(event)=>{event.preventDefault();showControlPanel(event,title,url);};newItem.ondragover=(event)=>{event.preventDefault();}}
+// 清除搜索框内容并重新聚焦
+function clearSearchInput() {
+    const searchInput = document.getElementById('search-input');
+    searchInput.value = ''; // 清空搜索框内容
+    searchInput.focus(); // 重新聚焦搜索框
+    document.getElementById('suggestions-box').style.display = 'none'; // 隐藏建议框
+}
+
+// 搜索框聚焦时的处理
+function setSearchFocus(focused) {
+    isSearchFocused = focused;
+    sessionStorage.setItem('isSearchFocused', focused);
+    const engineContainer = document.getElementById('engine-container');
+    engineContainer.style.display = focused ? 'flex' : 'none';
+    const clearButton = document.querySelector('.clear-button');
+
+    // 根据聚焦状态调整清除按钮的位置
+    if (focused) {
+        clearButton.style.transform = 'translateY(-50%) translateX(30px)';
+        document.getElementById('copyright').style.display = 'none';
+    } else {
+        clearButton.style.transform = 'translateY(-50%)';
+        document.getElementById('copyright').style.display = 'block';
+    }
+}
+
+// 搜索框输入事件处理
+document.getElementById('search-input').addEventListener('input', function () {
+    const clearButton = document.querySelector('.clear-button');
+    if (this.value.length > 0) {
+        clearButton.style.display = 'block'; // 显示清除按钮
+    } else {
+        clearButton.style.display = 'none'; // 隐藏清除按钮
+    }
+});
+
+// 清除按钮点击事件
+document.querySelector('.clear-button').addEventListener('click', function (event) {
+    event.stopPropagation(); // 阻止事件冒泡
+    clearSearchInput(); // 清空搜索框并重新聚焦
+});
+function loadShortcuts(){const shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[],shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.innerHTML='';if(shortcuts.length===0){const defaultShortcuts=[{title:'小霸王',url:'https://www.yikm.net/',image:'img/yx.png'},{title:'Github',url:'https://github.com/',image:'img/github.png'},{title:'AGE动漫',url:'https://m.agedm.org/#/update',image:'img/age.png'},{title:'哔哩哔哩',url:'https://m.bilibili.com/',image:'img/bilibili.png'},{title:'音乐',url:'https://tools.liumingye.cn/music/#/explore/artist',image:'img/my.png'}];localStorage.setItem('shortcuts',JSON.stringify(defaultShortcuts));defaultShortcuts.forEach(shortcut=>createShortcutElement(shortcut));}else{shortcuts.forEach(createShortcutElement);}}
+function createShortcutElement({title,url,image}){const shortcutContainer=document.getElementById('shortcut-container');const newItem=document.createElement('div');newItem.className='grid-item';newItem.setAttribute('draggable','true');newItem.onclick=()=>window.open(url,'_self');newItem.innerHTML=image?`<img src="${image}" alt="${title}" data-url="${url}"><span style="display:${showShortcutNames?'block':'none'};">${title}</span><div class="drag-handle" onmousedown="event.preventDefault();"></div>`:`<div style="width:40px;height:40px;border-radius:20%;display:flex;align-items:center;justify-content:center;color:#ffffff;box-shadow:0px 0px 0px rgba(0,0,0,0.2),0px 0px 0px rgba(255,255,255,1),12px 12px 20px rgba(0,0,0,0.2) inset,-12px -12px 20px rgba(255,255,255,1) inset;margin-bottom:2px;"><span style="font-size:20px;">${title.charAt(0).toUpperCase()}</span></div><span style="display:${showShortcutNames?'block':'none'};">${title}</span><div class="drag-handle" onmousedown="event.preventDefault();"></div>`;shortcutContainer.appendChild(newItem);newItem.ondragstart=(event)=>{event.dataTransfer.setData('text/plain',JSON.stringify({title,url,image}));};newItem.oncontextmenu=(event)=>{event.preventDefault();showControlPanel(event,title,url);};newItem.ondragover=(event)=>{event.preventDefault();}}
 function showControlPanel(event,title,url){const controlPanel=document.getElementById('control-panel');controlPanel.style.display='block';const updateControlPanelPosition=(event)=>{const shortcutRect=event.target.getBoundingClientRect(),controlPanelWidth=controlPanel.offsetWidth,controlPanelHeight=controlPanel.offsetHeight,shortcutCenterX=shortcutRect.left+shortcutRect.width/2,shortcutCenterY=shortcutRect.top+shortcutRect.height/2,offset=-20;let left,top;if(shortcutCenterY<window.innerHeight/2){if(shortcutCenterX<window.innerWidth/2){left=shortcutRect.right+offset;top=shortcutRect.bottom+offset;}else{left=shortcutRect.left-controlPanelWidth-offset;top=shortcutRect.bottom+offset;}}else{if(shortcutCenterX<window.innerWidth/2){left=shortcutRect.right+offset;top=shortcutRect.top-controlPanelHeight-offset;}else{left=shortcutRect.left-controlPanelWidth-offset;top=shortcutRect.top-controlPanelHeight-offset;}}controlPanel.style.transform=`translate(${left}px,${top}px)`;controlPanel.style.opacity='1';};updateControlPanelPosition(event);const onDragOver=(event)=>{requestAnimationFrame(()=>updateControlPanelPosition(event));};const onDragEnd=()=>{controlPanel.style.opacity='0';controlPanel.style.display='none';shortcutContainer.removeEventListener('dragover',onDragOver);document.removeEventListener('mouseup',onDragEnd);};shortcutContainer.addEventListener('dragover',onDragOver);document.addEventListener('mouseup',onDragEnd);controlPanel.dataset.title=title;controlPanel.dataset.url=url;}
 document.addEventListener('click',()=>{document.getElementById('control-panel').style.display='none';});function editShortcut(){const title=document.getElementById('control-panel').dataset.title,url=document.getElementById('control-panel').dataset.url,shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];currentEditIndex=shortcuts.findIndex(item=>item.title===title);document.getElementById('icon-title').value=title;document.getElementById('icon-url').value=url;document.getElementById('icon-image').value=shortcuts[currentEditIndex].image;isEditing=true;openAddDialog();}
 function deleteShortcut(){const title=document.getElementById('control-panel').dataset.title,shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];localStorage.setItem('shortcuts',JSON.stringify(shortcuts.filter(item=>item.title!==title)));loadShortcuts();document.getElementById('control-panel').style.display='none';}
@@ -213,8 +592,45 @@ function closeBackgroundDialog(){document.getElementById('background-dialog').st
 function setBackground(){const url=document.getElementById('background-url').value;if(url){backgroundContainer.style.backgroundImage=`url('${url}')`;localStorage.setItem('userBackground',url);closeBackgroundDialog();updateTextColorBasedOnBackground();}else{alert('请填写背景图片链接！');}}
 function chooseBackgroundImage(){const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=event=>{const file=event.target.files[0],reader=new FileReader();reader.onload=e=>{document.getElementById('background-url').value=e.target.result;setBackground();};reader.readAsDataURL(file);};input.click();}
 function openExportImportDialog(){document.getElementById('export-import-dialog').style.display='block';}
-function exportData(){const shortcuts=localStorage.getItem('shortcuts'),userBackground=localStorage.getItem('userBackground'),dataToExport={shortcuts:shortcuts?JSON.parse(shortcuts):[],userBackground:userBackground||''},blob=new Blob([JSON.stringify(dataToExport)],{type:'application/json'});saveAs(blob,'data.json');}
-function importData(){const input=document.createElement('input');input.type='file';input.accept='.json';input.onchange=event=>{const file=event.target.files[0],reader=new FileReader();reader.onload=function(e){const data=JSON.parse(e.target.result);if(data.shortcuts){const existingShortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];data.shortcuts.forEach(shortcut=>{if(!existingShortcuts.some(existingShortcut=>existingShortcut.title===shortcut.title)){existingShortcuts.push(shortcut);}});localStorage.setItem('shortcuts',JSON.stringify(existingShortcuts));loadShortcuts();}if(data.userBackground){localStorage.setItem('userBackground',data.userBackground);backgroundContainer.style.backgroundImage=`url('${data.userBackground}')`;updateTextColorBasedOnBackground();}closeExportImportDialog();};reader.readAsText(file);};input.click();}
+
+
+function exportData(){
+    const shortcuts = localStorage.getItem('shortcuts');
+    const dataToExport = {
+        shortcuts: shortcuts ? JSON.parse(shortcuts) : []
+    };
+    const blob = new Blob([JSON.stringify(dataToExport)], {type: 'application/json'});
+    saveAs(blob, 'data.json');
+}
+
+
+function importData(){
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = event => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = JSON.parse(e.target.result);
+            if (data.shortcuts) {
+                const existingShortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
+                data.shortcuts.forEach(shortcut => {
+                    if (!existingShortcuts.some(existingShortcut => existingShortcut.title === shortcut.title)) {
+                        existingShortcuts.push(shortcut);
+                    }
+                });
+                localStorage.setItem('shortcuts', JSON.stringify(existingShortcuts));
+                loadShortcuts();
+            }
+            closeExportImportDialog();
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+
 function closeExportImportDialog(){document.getElementById('export-import-dialog').style.display='none';showSearch();}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');}
@@ -227,25 +643,20 @@ function updateMaskValue(value){mask.style.backgroundColor=`rgba(0,0,0,${value/1
 function setBlur(){const blurValue=document.getElementById('blur-range').value,maskValue=document.getElementById('mask-range').value;mask.style.backdropFilter=`blur(${blurValue}px)`;mask.style.backgroundColor=`rgba(0,0,0,${maskValue/100})`;localStorage.setItem('blurValue',blurValue);localStorage.setItem('maskValue',maskValue);closeBlurDialog();}
 function getFaviconUrl(url){const link=new URL(url);return`${link.protocol}//${link.hostname}/favicon.ico`;}
 function fetchFavicon(url){const faviconUrl=getFaviconUrl(url);document.getElementById('icon-image').value=faviconUrl;}
-function toggleShortcutVisibility(){const shortcutContainer=document.getElementById('shortcut-container');shortcutsVisible=!shortcutsVisible;shortcutContainer.style.display=shortcutsVisible?'grid':'none';localStorage.setItem('shortcutsVisible',shortcutsVisible);}let shortcutsVisible=true;window.onclick = function(event) {
-    const sidebar = document.getElementById('sidebar');
-    const toggleButton = document.querySelector('.toggle-button');
-    if (mask.contains(event.target)) {
-        closeSidebar();
-    }
-    if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-        closeSidebar();
-    }
+function toggleShortcutVisibility(){const shortcutContainer=document.getElementById('shortcut-container');shortcutsVisible=!shortcutsVisible;shortcutContainer.style.display=shortcutsVisible?'grid':'none';}let shortcutsVisible=true;window.onclick=function(event){const sidebar=document.getElementById('sidebar');const toggleButton=document.querySelector('.toggle-button');if(mask.contains(event.target)){closeSidebar();}if(!sidebar.contains(event.target)&&!toggleButton.contains(event.target)){closeSidebar();}const controlPanel=document.getElementById('control-panel');if(!controlPanel.contains(event.target)){controlPanel.style.display='none';}if(document.getElementById('shortcut-container').contains(event.target)){closeSidebar();};};document.getElementById('shortcut-container').onclick=function(event){closeSidebar();};function hideSearch(){document.querySelector('.search-container').style.display='none';}function showSearch(){document.querySelector('.search-container').style.display='block';}
+const searchInput=document.querySelector('.search-input-style');const gridContainer=document.querySelector('.grid-container');const neumorphicText=document.querySelector('.neumorphic-text');searchInput.addEventListener('focus',()=>{gridContainer.style.visibility='hidden';neumorphicText.style.visibility='hidden';});searchInput.addEventListener('blur',()=>{gridContainer.style.visibility='visible';neumorphicText.style.visibility='visible';});
 
-    const controlPanel = document.getElementById('control-panel');
-    if (!controlPanel.contains(event.target)) {
-        controlPanel.style.display = 'none';
-    }  
-    if (document.getElementById('shortcut-container').contains(event.target)) {
-        closeSidebar();
+function applyNightMode() {
+    const body = document.body;
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    if (darkModeMediaQuery.matches) {
+        body.classList.add('night-mode');
+    } else {
+        body.classList.remove('night-mode');
     }
-};
-document.getElementById('shortcut-container').onclick=function(event){closeSidebar();};function hideSearch(){document.querySelector('.search-container').style.display='none';}function showSearch(){document.querySelector('.search-container').style.display='block';}
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyNightMode);
+applyNightMode();
 </script>
 </body>
 </html>
