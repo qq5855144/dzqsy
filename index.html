@@ -377,7 +377,7 @@ body {
 /* 侧边栏内容样式 */
 .sidebar-content {
     padding: 10px; /* 内边距 */
-    margin-top: 20px; /* 上边距 */
+    margin-top: 0px; /* 上边距 */
     display: flex; /* 使用flex布局 */
     flex-direction: column; /* 纵向排列 */
     gap: 20px; /* 间距 */
@@ -514,6 +514,7 @@ box-shadow:  6px 6px 9px #232323,
 <img src="img/you.svg" alt="进入 you.html" onclick="window.location.href='img/you.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 <img src="img/mm.svg" alt="进入 mm.html" onclick="window.location.href='img/mm.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 <img src="img/gsmf.svg" alt="进入 gsmf.html" onclick="window.location.href='img/gsmf.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
+<img src="img/脚本转换.svg" alt="进入 脚本转换.html" onclick="window.location.href='img/脚本转换.html';closeSidebar();" style="cursor:pointer;width:20px;height:20px;">
 </div>
 </div>
 <div class="control-panel" id="control-panel">
@@ -532,7 +533,39 @@ function showSuggestions(msg){new SearchHint().showMsg(msg);}
 function performSearchWithSuggestion(suggestion){const searchInput=document.getElementById('search-input');searchInput.value=suggestion;performSearch();}
 function replaceSearchInput(suggestion,event){event.preventDefault();const searchInput=document.getElementById('search-input');searchInput.value=suggestion;new SearchHint().fetchSuggestions();}
 function setSearchEngine(engine,button){searchEngine=engine;document.querySelectorAll('.engine-button').forEach(btn=>btn.classList.remove('selected'));button.classList.add('selected');const query=document.getElementById('search-input').value;if(query){performSearch();}}
-function performSearch(){const query=document.getElementById('search-input').value;sessionStorage.setItem('searchQuery',query);if(!query)return;const urlPattern=/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(\/[^\s]*)?$/i;if(urlPattern.test(query)){window.open(query.startsWith('http')?query:'http://'+query,'_self');resetSearchInput();return;}const searchUrls={bing:`https://cn.bing.com/search?q=${encodeURIComponent(query)}`,baidu:`https://www.baidu.com/s?wd=${encodeURIComponent(query)}`,google:`https://www.google.com/search?q=${encodeURIComponent(query)}`,yandex:`https://www.yandex.com/search/touch/?text=${encodeURIComponent(query)}`,bita:`https://metaso.cn/?q=${encodeURIComponent(query)}`,zhihu:`https://www.zhihu.com/search?type=content&q=${encodeURIComponent(query)}`,imageSearch:`https://quark.sm.cn/s?q=`+encodeURIComponent(query),apkpure:`https://apkpure.com/search?q=${encodeURIComponent(query)}`,backdata:`https://backdata.net/search.html?q=${encodeURIComponent(query)}`};window.open(searchUrls[searchEngine],'_self');resetSearchInput();}
+
+
+function performSearch() {
+    const query = document.getElementById('search-input').value;
+    sessionStorage.setItem('searchQuery', query);
+    if (!query) return;
+
+    // 正则表达式检测输入是否为网址
+    const urlPattern = /^(https?:\/\/)?([a-z0-9-]+(\.[a-z0-9-]+)+)(:\d+)?(\/[^\s]*)?$/i;
+    if (urlPattern.test(query)) {
+        // 如果是网址，直接访问
+        window.open(query.startsWith('http') ? query : 'http://' + query, '_self');
+        resetSearchInput();
+        return;
+    }
+
+    const searchUrls = {
+        bing: `https://cn.bing.com/search?q=${encodeURIComponent(query)}`,
+        baidu: `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`,
+        google: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+        yandex: `https://www.yandex.com/search/touch/?text=${encodeURIComponent(query)}`,
+        bita: `https://metaso.cn/?q=${encodeURIComponent(query)}`,
+        zhihu: `https://www.zhihu.com/search?type=content&q=${encodeURIComponent(query)}`,
+        imageSearch: `https://quark.sm.cn/s?q=` + encodeURIComponent(query),
+        apkpure: `https://apkpure.com/search?q=${encodeURIComponent(query)}`,
+        backdata: `https://backdata.net/search.html?q=${encodeURIComponent(query)}`
+    };
+
+    // 访问搜索引擎
+    window.open(searchUrls[searchEngine], '_self');
+    resetSearchInput();
+}
+
 function resetSearchInput(){const searchInput=document.getElementById('search-input');searchInput.value='';searchInput.blur();setSearchFocus(false);}
 // 清除搜索框内容并重新聚焦
 function clearSearchInput() {
@@ -575,7 +608,7 @@ document.querySelector('.clear-button').addEventListener('click', function (even
     event.stopPropagation(); // 阻止事件冒泡
     clearSearchInput(); // 清空搜索框并重新聚焦
 });
-function loadShortcuts(){const shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[],shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.innerHTML='';if(shortcuts.length===0){const defaultShortcuts=[{title:'小霸王',url:'https://www.yikm.net/',image:'img/yx.png'},{title:'Github',url:'https://github.com/',image:'img/github.png'},{title:'AGE动漫',url:'https://m.agedm.org/#/update',image:'img/age.png'},{title:'哔哩哔哩',url:'https://m.bilibili.com/',image:'img/bilibili.png'},{title:'音乐',url:'https://tools.liumingye.cn/music/#/explore/artist',image:'img/my.png'}];localStorage.setItem('shortcuts',JSON.stringify(defaultShortcuts));defaultShortcuts.forEach(shortcut=>createShortcutElement(shortcut));}else{shortcuts.forEach(createShortcutElement);}}
+function loadShortcuts(){const shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[],shortcutContainer=document.getElementById('shortcut-container');shortcutContainer.innerHTML='';if(shortcuts.length===0){const defaultShortcuts=[{title:'小霸王',url:'https://www.yikm.net/',image:'img/yx.png'},{title:'Github',url:'https://github.com/',image:'img/github.png'},{title:'AGE动漫',url:'https://m.agedm.org/#/update',image:'img/age.png'},{title:'哔哩哔哩',url:'https://m.bilibili.com/',image:'img/bilibili.png'},{title:'工作日记',url:'file:///android_asset/img/搬砖日记.html',image:'img/my.png'}];localStorage.setItem('shortcuts',JSON.stringify(defaultShortcuts));defaultShortcuts.forEach(shortcut=>createShortcutElement(shortcut));}else{shortcuts.forEach(createShortcutElement);}}
 function createShortcutElement({title,url,image}){const shortcutContainer=document.getElementById('shortcut-container');const newItem=document.createElement('div');newItem.className='grid-item';newItem.setAttribute('draggable','true');newItem.onclick=()=>window.open(url,'_self');newItem.innerHTML=image?`<img src="${image}" alt="${title}" data-url="${url}"><span style="display:${showShortcutNames?'block':'none'};">${title}</span><div class="drag-handle" onmousedown="event.preventDefault();"></div>`:`<div style="width:40px;height:40px;border-radius:20%;display:flex;align-items:center;justify-content:center;color:#ffffff;box-shadow:0px 0px 0px rgba(0,0,0,0.2),0px 0px 0px rgba(255,255,255,1),12px 12px 20px rgba(0,0,0,0.2) inset,-12px -12px 20px rgba(255,255,255,1) inset;margin-bottom:2px;"><span style="font-size:20px;">${title.charAt(0).toUpperCase()}</span></div><span style="display:${showShortcutNames?'block':'none'};">${title}</span><div class="drag-handle" onmousedown="event.preventDefault();"></div>`;shortcutContainer.appendChild(newItem);newItem.ondragstart=(event)=>{event.dataTransfer.setData('text/plain',JSON.stringify({title,url,image}));};newItem.oncontextmenu=(event)=>{event.preventDefault();showControlPanel(event,title,url);};newItem.ondragover=(event)=>{event.preventDefault();}}
 function showControlPanel(event,title,url){const controlPanel=document.getElementById('control-panel');controlPanel.style.display='block';const updateControlPanelPosition=(event)=>{const shortcutRect=event.target.getBoundingClientRect(),controlPanelWidth=controlPanel.offsetWidth,controlPanelHeight=controlPanel.offsetHeight,shortcutCenterX=shortcutRect.left+shortcutRect.width/2,shortcutCenterY=shortcutRect.top+shortcutRect.height/2,offset=-20;let left,top;if(shortcutCenterY<window.innerHeight/2){if(shortcutCenterX<window.innerWidth/2){left=shortcutRect.right+offset;top=shortcutRect.bottom+offset;}else{left=shortcutRect.left-controlPanelWidth-offset;top=shortcutRect.bottom+offset;}}else{if(shortcutCenterX<window.innerWidth/2){left=shortcutRect.right+offset;top=shortcutRect.top-controlPanelHeight-offset;}else{left=shortcutRect.left-controlPanelWidth-offset;top=shortcutRect.top-controlPanelHeight-offset;}}controlPanel.style.transform=`translate(${left}px,${top}px)`;controlPanel.style.opacity='1';};updateControlPanelPosition(event);const onDragOver=(event)=>{requestAnimationFrame(()=>updateControlPanelPosition(event));};const onDragEnd=()=>{controlPanel.style.opacity='0';controlPanel.style.display='none';shortcutContainer.removeEventListener('dragover',onDragOver);document.removeEventListener('mouseup',onDragEnd);};shortcutContainer.addEventListener('dragover',onDragOver);document.addEventListener('mouseup',onDragEnd);controlPanel.dataset.title=title;controlPanel.dataset.url=url;}
 document.addEventListener('click',()=>{document.getElementById('control-panel').style.display='none';});function editShortcut(){const title=document.getElementById('control-panel').dataset.title,url=document.getElementById('control-panel').dataset.url,shortcuts=JSON.parse(localStorage.getItem('shortcuts'))||[];currentEditIndex=shortcuts.findIndex(item=>item.title===title);document.getElementById('icon-title').value=title;document.getElementById('icon-url').value=url;document.getElementById('icon-image').value=shortcuts[currentEditIndex].image;isEditing=true;openAddDialog();}
